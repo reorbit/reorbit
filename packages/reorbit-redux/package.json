@@ -1,0 +1,34 @@
+{
+  "name": "reorbit-redux",
+  "version": "0.0.1",
+  "description": "Redux integration with Reorbit.",
+  "keywords": [
+    "redux",
+    "reorbit"
+  ],
+  "author": "Richard Heng <rheng@protonmail.com>",
+  "homepage": "https://github.com/reorbit/reorbit#README",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reorbit/reorbit.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/reorbit/reorbit/issues"
+  },
+  "dependencies": {
+    "redux": "^4.0.1"
+  }
+}
