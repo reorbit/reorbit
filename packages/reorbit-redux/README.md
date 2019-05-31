@@ -1,11 +1,7 @@
 # `reorbit-redux`
 
-> TODO: description
+Reorbit orb augmenter to enable compatability with Redux.
 
 ## Usage
 
-```
-const reorbitRedux = require('reorbit-redux');
-
-// TODO: DEMONSTRATE API
-```
+See examples for useage.

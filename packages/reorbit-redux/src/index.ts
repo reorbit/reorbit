@@ -109,9 +109,9 @@ function bindRedux(orb: ReduxOrb, orbDef: ReduxOrbDef, store: Store, reducerKey?
 
     const newOrb = orb as any;
     const initial = getRelevantState(orb.root!.meta.initialReduxState || {}, orb.meta.path.concat(reduxKey));
-    newOrb[reduxKey] = initial || reduxDef.default();
+    newOrb[reduxKey] = initial || reduxDef.default;
     const transitions = reduxDef.transitions || {};
-    initialOrbState[reduxKey] = redux[reduxKey].default();
+    initialOrbState[reduxKey] = redux[reduxKey].default;
 
     let process = false;
     keys(transitions).map((transitionKey) => {
