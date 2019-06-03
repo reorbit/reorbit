@@ -7108,9 +7108,9 @@ renderkid@^2.0.1:
     strip-ansi "^3.0.0"
     utila "^0.4.0"
 
-reorbit@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/reorbit/-/reorbit-0.0.2.tgz#99b0e70cc4781b8aecf6e5e296bee8f6881ef921"
+reorbit@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/reorbit/-/reorbit-0.0.3.tgz#d389dbb8d94877bde2bc010ca95ff0b88b57c548"
 
 repeat-element@^1.1.2:
   version "1.1.3"

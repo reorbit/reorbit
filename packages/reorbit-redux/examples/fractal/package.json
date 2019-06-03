@@ -11,9 +11,9 @@
     "react-dom": "^16.8.6",
     "react-scripts": "3.0.1",
     "redux": "^4.0.1",
-    "reorbit": "^0.0.2",
+    "reorbit": "^0.0.3",
     "reorbit-react": "^0.0.2",
-    "reorbit-redux": "^0.0.2",
+    "reorbit-redux": "^0.0.3",
     "typescript": "3.5.1"
   },
   "scripts": {

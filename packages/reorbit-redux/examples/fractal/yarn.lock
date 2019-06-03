@@ -7125,15 +7125,15 @@ reorbit-react@^0.0.2:
   dependencies:
     react "^16.8.6"
 
-reorbit-redux@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/reorbit-redux/-/reorbit-redux-0.0.2.tgz#7e310067339aacf1cf9edf04c7c1ec7415cb5d4d"
+reorbit-redux@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/reorbit-redux/-/reorbit-redux-0.0.3.tgz#30f570249979d718acdae8a702abb8d1d60dd248"
   dependencies:
     redux "^4.0.1"
 
-reorbit@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/reorbit/-/reorbit-0.0.2.tgz#99b0e70cc4781b8aecf6e5e296bee8f6881ef921"
+reorbit@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/reorbit/-/reorbit-0.0.3.tgz#d389dbb8d94877bde2bc010ca95ff0b88b57c548"
 
 repeat-element@^1.1.2:
   version "1.1.3"
