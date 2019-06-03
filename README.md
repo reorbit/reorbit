@@ -24,7 +24,7 @@ Since all serializable state is structured in a predictable way, orbs can also b
 ## The basics:
 
 ### Step 1 - Defining your orb (types are optional but recommended)
-```
+```javascript
 import { Orb, OrbDef, createOrb, subscribe } from "reorbit";
 
 export interface CounterOrb extends Orb {
@@ -46,17 +46,17 @@ export const CounterOrbDef: OrbDef = {
 }
 ```
 ### Step 2 - Create your orb
-```
+```javascript
 const counterOrb = createOrb<CounterOrb>(CounterOrbDef);
 ```
 ### Step 3 - Subscribe to state changes
-```
+```javascript
 subscribe(counterOrb, () => {
   console.log(`Value: ${counterOrb.value}`);
 });
 ```
 ### Step 4 - Trigger a state change
-```
+```javascript
 counterOrb.state.value.increment(1);
 // Value: 1
 ```
@@ -64,7 +64,7 @@ counterOrb.state.value.increment(1);
 [Try it out!](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/reorbit/examples/basic)
 
 ## Static properties
-```
+```javascript
 export interface StaticOrb extends Orb {
   someConstant: number;
   sideEffect: (orb: StaticOrb) => void;
@@ -86,7 +86,7 @@ staticOrb.sideEffect(staticOrb);
 ```
 
 ## Dynamic properties
-```
+```javascript
 export interface DynamicOrb extends Orb {
   value: number;
   increment: (value: number) => void;
@@ -131,7 +131,7 @@ console.log(dynamicOrb.double)
 ## Anatomy of an orb definition
 
 ### State Map
-```
+```javascript
 export const NewOrbDef: OrbDef = {
   state: { // All serializable state should be defined in the state map
     stateKey: { // The state is assigned to the orb with the key provided
@@ -149,7 +149,7 @@ export const NewOrbDef: OrbDef = {
 };
 ```
 ### Static Map
-```
+```javascript
 export const NewOrbDef: OrbDef = {
   static: { // All static values and functions should be defined in the static map
     // Properties can be values or functions
@@ -161,7 +161,7 @@ export const NewOrbDef: OrbDef = {
 }
 ```
 ### Dynamic Map
-```
+```javascript
 export const NewOrbDef: OrbDef = {
   state: {
       value: {
