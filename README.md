@@ -7,7 +7,11 @@ React popularized component based views, but it coupled application state with t
 
 To give a better sense of this in action, here is a demo of a fractal counter using Reorbit:
 
+[Fractal Counter](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/reorbit-react/examples/fractal)
+
 And a slightly more complicated application where each counter also tracks the sum of all it's child counters in a performant manner:
+
+[Sum](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/reorbit-react/examples/sum)
 
 ## How does it work?
 
@@ -31,7 +35,7 @@ export interface CounterOrb extends Orb {
 export const CounterOrbDef: OrbDef = {
   state: {
     value: {
-      default: () => 0,
+      default: 0,
       transitions: {
         increment(state: number, value: number): number {
           return state + value;
@@ -57,7 +61,7 @@ counterOrb.state.value.increment(1);
 // Value: 1
 ```
 
-Try it out!
+[Try it out!](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/reorbit/examples/basic)
 
 ## Static properties
 ```
@@ -92,7 +96,7 @@ export interface DynamicOrb extends Orb {
 export const DynamicOrbDef: OrbDef = {
   state: {
     value: {
-      default: () => 0,
+      default: 0,
       transitions: {
         increment(state: number, value: number): number {
           return state + value;
@@ -102,7 +106,7 @@ export const DynamicOrbDef: OrbDef = {
   },
   dynamic: {
     double: {
-        dependencies: () => [
+        dependencies: [
             (orb: DynamicOrb) => orb.state.value,
         ],
         combiner(orb: DynamicOrb) {
@@ -131,7 +135,7 @@ console.log(dynamicOrb.double)
 export const NewOrbDef: OrbDef = {
   state: { // All serializable state should be defined in the state map
     stateKey: { // The state is assigned to the orb with the key provided
-      default: () => 0, // The initial function returns the initial state
+      default: 0, // The initial state
       transitions: { // The transitions in the definition will be assigned to the orb
         // When the function on the orb is called the state transition defined here is made
         // All the arguments to the function call are appended to the state transition arguments
@@ -161,7 +165,7 @@ export const NewOrbDef: OrbDef = {
 export const NewOrbDef: OrbDef = {
   state: {
       value: {
-          default: () => 0,
+          default: 0,
       }
   }
   dynamic: { // All dynamic serializable and non serializable data should be stored in the dynamic map
@@ -170,7 +174,7 @@ export const NewOrbDef: OrbDef = {
         // Do define these values, you need to define a function that returns and array of functions
         // Those functions take in the current orb as an argument and return a subscribable value
         // Subscribable values are defined as state or other dynamic values
-        dependencies: () => [
+        dependencies: [
             (orb: NewOrbDef) => orb.state.value,
         ],
         // The combiner takes in the orbs containing the subscrbed dependencies
