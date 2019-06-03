@@ -1,5 +1,4 @@
-# Reorbit
-
+# <img src="./logo/reorbit-logo.png " width="256">
 Reorbit is a library that enables application state to be structured, dynamic, and composable.
 
 # Motivation

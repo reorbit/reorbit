@@ -15,7 +15,7 @@ export interface OrbDef {
   },
   dynamic?: {
     [key: string]: {
-      dependencies?: () => Array<(orb: any) => State>,
+      dependencies?: Array<(orb: any) => State>,
       combiner: (...args: any[]) => any,
     },
   },
@@ -100,7 +100,7 @@ function bindState(orb: Orb, orbDef: OrbDef, initialState: any) {
       subscriptions: new Set(),
     };
     const newOrb = orb as any;
-    newOrb[stateKey] = initialState && initialState[stateKey] ? initialState[stateKey] : state[stateKey].default();
+    newOrb[stateKey] = initialState && initialState[stateKey] ? initialState[stateKey] : state[stateKey].default;
     const transitions = state[stateKey].transitions || {};
     const stateTransistionKeys = keys(transitions);
     for (let stateTransitionKeyIndex = 0; stateTransitionKeyIndex < stateTransistionKeys.length; stateTransitionKeyIndex += 1) {
@@ -174,16 +174,16 @@ function bindDynamic(orb: Orb, orbDef: OrbDef) {
   for (let dynamicKeyIndex = 0; dynamicKeyIndex < dynamicKeys.length; dynamicKeyIndex += 1) {
     const dynamicKey = dynamicKeys[dynamicKeyIndex];
     const dynamicDef = dynamic[dynamicKey];
-    const selectors = dynamicDef.dependencies || (() => []);
+    const selectors = [...(dynamicDef.dependencies || [])];
     orb.dynamic[dynamicKey] = {
       orb: orb,
       subscriptions: new Set(),
-      dependencies: selectors(),
+      dependencies: selectors,
       combiner: dynamicDef.combiner,
       depSubscriptions: new Set(),
       children: new Set(),
     };
-    const dependencies = selectors();
+    const dependencies = selectors;
     const dependencySubscribables = dependencies.map(dependency => {
       return dependency(orb);
     });

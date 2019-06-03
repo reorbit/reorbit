@@ -1,11 +1,7 @@
 # `reorbit-react`
 
-> TODO: description
+React hooks for for binding reorbit orbs to views.
 
 ## Usage
 
-```
-const reorbitReact = require('reorbit-react');
-
-// TODO: DEMONSTRATE API
-```
+See examples for useage.

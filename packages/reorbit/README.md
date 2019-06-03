@@ -1,11 +1,7 @@
 # `reorbit`
 
-> TODO: description
+Core libary for reorbit.
 
 ## Usage
 
-```
-const reorbit = require('reorbit');
-
-// TODO: DEMONSTRATE API
-```
+See examples for useage.
