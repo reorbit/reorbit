@@ -25,11 +25,17 @@ Since all serializable state is structured in a predictable way, orbs can also b
 
 ### Step 1 - Defining your orb (types are optional but recommended)
 ```javascript
-import { Orb, OrbDef, createOrb, subscribe } from "reorbit";
+import { Orb, OrbDef, State, createOrb, subscribe } from "reorbit";
+
+interface CounterOrbState extends State {
+  increment: (value: number) => number;
+}
 
 export interface CounterOrb extends Orb {
   value: number;
-  increment: (value: number) => void;
+  state: {
+    value: CounterOrbState,
+  },
 }
 
 export const CounterOrbDef: OrbDef = {

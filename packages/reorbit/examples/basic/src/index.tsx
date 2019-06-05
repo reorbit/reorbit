@@ -1,9 +1,14 @@
-import { Orb, OrbDef, createOrb, subscribe } from "reorbit";
+import { Orb, OrbDef, State, createOrb, subscribe } from "reorbit";
 
+interface CounterOrbState extends State {
+  increment: (value: number) => number;
+}
 
 export interface CounterOrb extends Orb {
   value: number;
-  increment: (value: number) => void;
+  state: {
+    value: CounterOrbState,
+  },
 }
 
 export const CounterOrbDef: OrbDef = {
