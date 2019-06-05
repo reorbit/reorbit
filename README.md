@@ -93,10 +93,16 @@ staticOrb.sideEffect(staticOrb);
 
 ## Dynamic properties
 ```javascript
-export interface DynamicOrb extends Orb {
-  value: number;
+interface ValueState extends State {
   increment: (value: number) => void;
-  double: number;
+}
+
+export interface DynamicOrb extends Orb {
+  value: number,
+  double: number,
+  state: {
+    value: ValueState,
+  },
 }
 
 export const DynamicOrbDef: OrbDef = {
@@ -126,10 +132,10 @@ const dynamicOrb = createOrb<DynamicOrb>(DynamicOrbDef);
 
 console.log(dynamicOrb.double)
 // 0
-dynamicOrb.increment(1);
+dynamicOrb.state.value.increment(1);
 console.log(dynamicOrb.double)
 // 2
-dynamicOrb.increment(1);
+dynamicOrb.state.value.increment(1);
 console.log(dynamicOrb.double)
 // 4
 ```
