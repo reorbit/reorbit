@@ -46,10 +46,10 @@ export const CounterOrbDef: OrbDef = {
         increment(state: number, value: number): number {
           return state + value;
         },
-      }
-    }
+      },
+    },
   },
-}
+};
 ```
 ### Step 2 - Create your orb
 ```javascript
@@ -83,7 +83,7 @@ export const StaticOrbDef: OrbDef = {
         setTimeout(() => console.log(`Value: ${orb.someConstant}`), 1000);
     },
   },
-}
+};
 
 const staticOrb = createOrb<StaticOrb>(StaticOrbDef);
 
@@ -113,30 +113,30 @@ export const DynamicOrbDef: OrbDef = {
         increment(state: number, value: number): number {
           return state + value;
         },
-      }
-    }
+      },
+    },
   },
   dynamic: {
     double: {
-        dependencies: [
-            (orb: DynamicOrb) => orb.state.value,
-        ],
-        combiner(orb: DynamicOrb) {
-            return orb.value * 2;
-        },
+      dependencies: [
+        (orb: DynamicOrb) => orb.state.value,
+      ],
+      combiner(orb: DynamicOrb) {
+        return orb.value * 2;
+      },
     },
   },
-}
+};
 
 const dynamicOrb = createOrb<DynamicOrb>(DynamicOrbDef);
 
-console.log(dynamicOrb.double)
+console.log(dynamicOrb.double);
 // 0
 dynamicOrb.state.value.increment(1);
-console.log(dynamicOrb.double)
+console.log(dynamicOrb.double);
 // 2
 dynamicOrb.state.value.increment(1);
-console.log(dynamicOrb.double)
+console.log(dynamicOrb.double);
 // 4
 ```
 
@@ -167,34 +167,34 @@ export const NewOrbDef: OrbDef = {
     // Properties can be values or functions
     staticProperty: 0,
     staticFunction() {
-        console.log('side effect'); // Functions are a good place to store side effects
+      console.log('side effect'); // Functions are a good place to store side effects
     },
   },
-}
+};
 ```
 ### Dynamic Map
 ```javascript
 export const NewOrbDef: OrbDef = {
   state: {
-      value: {
-          default: 0,
-      }
-  }
+    value: {
+      default: 0,
+    },
+  },
   dynamic: { // All dynamic serializable and non serializable data should be stored in the dynamic map
     // These can be composed of derived state, or even child orbs
     dynamicKey: {
-        // Do define these values, you need to define a function that returns and array of functions
-        // Those functions take in the current orb as an argument and return a subscribable value
-        // Subscribable values are defined as state or other dynamic values
-        dependencies: [
-            (orb: NewOrbDef) => orb.state.value,
-        ],
-        // The combiner takes in the orbs containing the subscrbed dependencies
-        // The value returned from the function is assigned to the orb
-        combiner(orb: NewOrbDef) {
-            return orb.value * 2;
-        },
+      // To define these values, you need to define a function that returns and array of functions
+      // Those functions take in the current orb as an argument and return a subscribable value
+      // Subscribable values are defined as state or other dynamic values
+      dependencies: [
+          (orb: NewOrbDef) => orb.state.value,
+      ],
+      // The combiner takes in the orbs containing the subscrbed dependencies
+      // The value returned from the function is assigned to the orb
+      combiner(orb: NewOrbDef) {
+          return orb.value * 2;
+      },
     },
   },
-}
+};
 ```
