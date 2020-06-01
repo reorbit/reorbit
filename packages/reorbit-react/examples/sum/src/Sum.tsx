@@ -2,8 +2,6 @@ import React, { memo } from 'react';
 import { createOrb, Orb, OrbDef, State } from 'reorbit';
 import { useOrb } from 'reorbit-react';
 
-const { keys } = Object;
-
 interface SumOrbStore extends State {
   increment: (value: number) => number,
   decrement: (value: number) => number,
@@ -16,9 +14,7 @@ export interface SumOrb extends Orb {
     value: SumOrbStore,
     sum: SumOrbStore,
   },
-  children: {
-    [key: string]: SumOrb,
-  },
+  children: SumOrb[],
   incrementWithChildren: (orb: SumOrb) => void,
   decrementWithChildren: (orb: SumOrb) => void,
 }
@@ -74,11 +70,11 @@ export const SumOrbDef: OrbDef = {
         (orb: SumOrb) => orb.state.value,
       ],
       combiner: (orb: SumOrb) => {
-        const map: { [key: number]: SumOrb } = {};
+        const orbs = [];
         for (let count = 0; count < orb.value; count += 1) {
-          map[count] = createOrb<SumOrb>(SumOrbDef, orb, String(count));
+          orbs.push(createOrb<SumOrb>(SumOrbDef, orb, String(count)));
         }
-        return map;
+        return orbs;
       },
     },
   },
@@ -97,8 +93,8 @@ export const Sum = memo(({ orb }: { orb: SumOrb }) => {
         <button onClick={() => decrementWithChildren(orb)}>-</button>
       </div>
       <div>
-        {keys(children).map((key) => {
-          return <Sum key={key} orb={children[key]} />;
+        {children.map((child, key) => {
+          return <Sum key={key} orb={child} />;
         })}
       </div>
     </div>
