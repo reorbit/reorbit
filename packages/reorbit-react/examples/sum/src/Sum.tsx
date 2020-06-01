@@ -2,6 +2,8 @@ import React, { memo } from 'react';
 import { createOrb, Orb, OrbDef, State } from 'reorbit';
 import { useOrb } from 'reorbit-react';
 
+const { keys } = Object;
+
 interface SumOrbStore extends State {
   increment: (value: number) => number,
   decrement: (value: number) => number,

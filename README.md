@@ -80,7 +80,7 @@ export const StaticOrbDef: OrbDef = {
   static: {
     someConstant: 1,
     sideEffect(orb: StaticOrb) {
-        setTimeout(() => console.log(`Value: ${orb.someConstant}`), 1000);
+      setTimeout(() => console.log(`Value: ${orb.someConstant}`), 1000);
     },
   },
 };
@@ -187,12 +187,12 @@ export const NewOrbDef: OrbDef = {
       // Those functions take in the current orb as an argument and return a subscribable value
       // Subscribable values are defined as state or other dynamic values
       dependencies: [
-          (orb: NewOrbDef) => orb.state.value,
+        (orb: NewOrbDef) => orb.state.value,
       ],
       // The combiner takes in the orbs containing the subscrbed dependencies
       // The value returned from the function is assigned to the orb
       combiner(orb: NewOrbDef) {
-          return orb.value * 2;
+        return orb.value * 2;
       },
     },
   },
