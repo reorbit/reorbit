@@ -9,5 +9,5 @@
       "path": "../reorbit"
     }
   ],
-  "exclude": [ "examples" ]
+  "exclude": [ "examples", "lib" ]
 }
