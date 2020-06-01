@@ -3,8 +3,6 @@ import { createOrb, State } from 'reorbit';
 import { useOrb } from 'reorbit-react';
 import { ReduxOrbDef, ReduxOrb } from 'reorbit-redux';
 
-const { keys } = Object;
-
 interface FractalOrbStore extends State {
   increment: (value: number) => number,
   decrement: (value: number) => number,
@@ -15,9 +13,7 @@ export interface FractalOrb extends ReduxOrb {
   state: {
     value: FractalOrbStore,
   },
-  children: {
-    [key: string]: FractalOrb,
-  },
+  children: FractalOrb[],
 }
 
 export const FractalOrbDef: ReduxOrbDef = {
@@ -40,11 +36,11 @@ export const FractalOrbDef: ReduxOrbDef = {
         (orb: FractalOrb) => orb.redux.value,
       ],
       combiner: (orb: FractalOrb) => {
-        const map: { [key: number]: FractalOrb } = {};
+        const orbs = [];
         for (let count = 0; count < orb.value; count += 1) {
-          map[count] = createOrb<FractalOrb>(FractalOrbDef, orb, String(count));
+          orbs.push(createOrb<FractalOrb>(FractalOrbDef, orb, String(count)));
         }
-        return map;
+        return orbs;
       },
     },
   },
@@ -62,8 +58,8 @@ export const Fractal = ({ orb }: { orb: FractalOrb }) => {
         <button onClick={() => decrement(1)}>-</button>
       </div>
       <div>
-        {keys(children).map((key) => {
-          return <Fractal key={key} orb={children[key]} />;
+        {children.map((child, key) => {
+          return <Fractal key={key} orb={child} />;
         })}
       </div>
     </div>
