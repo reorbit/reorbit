@@ -42,9 +42,7 @@ export const FractalOrbDef: ReduxOrbDef = {
       combiner: (orb: FractalOrb) => {
         const map: { [key: number]: FractalOrb } = {};
         for (let count = 0; count < orb.value; count += 1) {
-          map[count] = orb.children[count] ?
-            orb.children[count] :
-            createOrb<FractalOrb>(FractalOrbDef, orb, String(count));
+          map[count] = createOrb<FractalOrb>(FractalOrbDef, orb, String(count));
         }
         return map;
       },

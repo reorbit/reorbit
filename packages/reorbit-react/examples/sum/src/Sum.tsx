@@ -76,9 +76,7 @@ export const SumOrbDef: OrbDef = {
       combiner: (orb: SumOrb) => {
         const map: { [key: number]: SumOrb } = {};
         for (let count = 0; count < orb.value; count += 1) {
-          map[count] = orb.children[count] ?
-            orb.children[count] :
-            createOrb<SumOrb>(SumOrbDef, orb, String(count));
+          map[count] = createOrb<SumOrb>(SumOrbDef, orb, String(count));
         }
         return map;
       },
