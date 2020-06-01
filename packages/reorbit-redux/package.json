@@ -1,6 +1,6 @@
 {
   "name": "reorbit-redux",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Redux integration with Reorbit.",
   "keywords": [
     "redux",
