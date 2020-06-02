@@ -1,6 +1,6 @@
 {
   "name": "reorbit",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Reorbit is a library that enables application state to be structured, dynamic, and composable.",
   "keywords": [
     "state",
