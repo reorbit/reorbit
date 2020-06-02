@@ -12,9 +12,9 @@
     "react-scripts": "3.0.1",
     "redux": "^4.0.1",
     "redux-devtools-extension": "^2.13.8",
-    "reorbit": "^0.0.4",
-    "reorbit-react": "^0.0.4",
-    "reorbit-redux": "^0.0.4",
+    "reorbit": "^0.0.5",
+    "reorbit-react": "^0.0.5",
+    "reorbit-redux": "^0.0.5",
     "typescript": "3.5.1"
   },
   "scripts": {

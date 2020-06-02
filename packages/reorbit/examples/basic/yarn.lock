@@ -8462,10 +8462,10 @@ renderkid@^2.0.1:
     strip-ansi "^3.0.0"
     utila "^0.4.0"
 
-reorbit@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/reorbit/-/reorbit-0.0.4.tgz#84b4116597ace59fd95491554ce344ced7394886"
-  integrity sha512-DeMH2hRpERRclVBsm8zEArAHTnKCOgPf4c+MgWBXYLnD6lUBykixxbqZq8bztKvjq+e22QKO/Ih9g3PHOVcZJQ==
+reorbit@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/reorbit/-/reorbit-0.0.5.tgz#0d221ecefe0f88e1f18d7525ff203e74d2c5251d"
+  integrity sha512-KtZZeEXE6zJ+i44UZ6w0dTJN3+tzr6IaxFDtq36bm0YtLwa6ylTupGb9NWkPRvaUXco/FbvkNUS7WbJMgZpq/A==
 
 repeat-element@^1.1.2:
   version "1.1.3"
