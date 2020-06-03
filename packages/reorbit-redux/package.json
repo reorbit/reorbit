@@ -28,7 +28,10 @@
   "bugs": {
     "url": "https://github.com/reorbit/reorbit/issues"
   },
-  "dependencies": {
+  "peerDependencies": {
+    "redux": "^4.0.1"
+  },
+  "devDependencies": {
     "redux": "^4.0.1"
   }
 }
