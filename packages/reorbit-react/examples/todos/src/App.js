@@ -32,7 +32,7 @@ const TodoListOrbDef = {
         (orb) => orb.state.todoList,
         (orb) => orb.parent.filterOrb.state.visibilityFilter,
       ],
-      derive(orb, [, filterOrb]) {
+      derive(...[orb, , filterOrb]) {
         const { todoList } = orb;
         const { visibilityFilter } = filterOrb
         switch (visibilityFilter) {
@@ -84,7 +84,7 @@ const AddTodoOrbDef = {
   },
   static: {
     addTodo(orb, todoText) {
-      orb.parent.todoListOrb.state.todoList.addTodo(todoText);
+      orb.parent.todoListOrb.addTodo(todoText);
     }
   }
 }
@@ -107,10 +107,10 @@ const appOrb = createOrb(AppOrbDef);
 
 const AddTodo = () => {
   const { addTodoOrb } = appOrb;
-  const { todoText, state, addTodo } = addTodoOrb;
+  const { todoText, update, addTodo } = addTodoOrb;
   useOrb(addTodoOrb)
 
-  const onChange = e => state.todoText.update(e.target.value)
+  const onChange = e => update(e.target.value)
 
   return (
     <div>
@@ -121,7 +121,7 @@ const AddTodo = () => {
             return
           }
           addTodo(addTodoOrb, todoText)
-          state.todoText.update('')
+          update('')
         }}
       >
         <input value={todoText} onChange={onChange} />
@@ -152,21 +152,21 @@ const TodoList = ({ todos, toggleTodo }) => (
 
 const VisibleTodoList = () => {
   const { todoListOrb } = appOrb;
-  const { visibleTodoList, state } = todoListOrb;
+  const { visibleTodoList, toggleTodo } = todoListOrb;
   useOrb(todoListOrb)
 
   return (
-    <TodoList todos={visibleTodoList} toggleTodo={state.todoList.toggleTodo} />
+    <TodoList todos={visibleTodoList} toggleTodo={toggleTodo} />
   )
 }
 
 const FilterLink = ({ children, filter }) => {
   const { filterOrb } = appOrb;
-  const { visibilityFilter, state } = filterOrb;
+  const { visibilityFilter, setVisibilityFilter } = filterOrb;
   useOrb(filterOrb)
   return (
     <button
-    onClick={() => state.visibilityFilter.setVisibilityFilter(filter)}
+    onClick={() => setVisibilityFilter(filter)}
     disabled={filter === visibilityFilter}
     style={{
       marginLeft: '4px'
@@ -187,6 +187,7 @@ const Footer = () => (
 )
 
 function App() {
+  useOrb(appOrb);
   return (
     <div>
       <AddTodo />

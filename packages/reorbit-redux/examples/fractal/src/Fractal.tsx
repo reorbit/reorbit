@@ -1,22 +1,16 @@
 import React from 'react';
-import { createOrb, State } from 'reorbit';
+import { createOrb } from 'reorbit';
 import { useOrb } from 'reorbit-react';
-import { ReduxOrbDef, ReduxOrb } from 'reorbit-redux';
-
-interface FractalOrbStore extends State {
-  increment: (value: number) => number,
-  decrement: (value: number) => number,
-}
+import { ReduxOrb, ReduxOrbDef } from '../../../lib/reorbit-redux';
 
 export interface FractalOrb extends ReduxOrb {
   value: number,
-  state: {
-    value: FractalOrbStore,
-  },
+  increment: (value: number) => number,
+  decrement: (value: number) => number,
   children: FractalOrb[],
 }
 
-export const FractalOrbDef: ReduxOrbDef = {
+export const FractalOrbDef: ReduxOrbDef<FractalOrb> = {
   redux: {
     value: {
       default: 0,
@@ -34,9 +28,10 @@ export const FractalOrbDef: ReduxOrbDef = {
     children: {
       dependencies: [
         (orb: FractalOrb) => orb.redux.value,
+        (orb: FractalOrb) => orb.redux.value,
       ],
       derive: (orb: FractalOrb) => {
-        const orbs = [];
+        const orbs: FractalOrb[] = [];
         for (let count = 0; count < orb.value; count += 1) {
           orbs.push(createOrb<FractalOrb>(FractalOrbDef, orb, String(count)));
         }
@@ -47,8 +42,7 @@ export const FractalOrbDef: ReduxOrbDef = {
 };
 
 export const Fractal = ({ orb }: { orb: FractalOrb }) => {
-  const { value, redux, children } = orb;
-  const { value: { increment, decrement } } = redux;
+  const { value, increment, decrement, children } = orb;
   useOrb(orb);
   return (
     <div style={{ display: "flex", flexDirection: "row" }}>

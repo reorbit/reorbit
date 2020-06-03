@@ -5,7 +5,8 @@
   "author": "Richard Heng <rheng@protonmail.com>",
   "homepage": "https://github.com/reorbit/reorbit#readme",
   "license": "MIT",
-  "main": "lib/reorbit-redux-devtools.js",
+  "main": "./lib/reorbit-redux-devtools.js",
+  "types": "./lib/reorbit-redux-devtools.d.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -18,6 +19,9 @@
     "url": "git+https://github.com/reorbit/reorbit.git"
   },
   "scripts": {
+    "compile": "node ../../scripts/compile.js",
+    "examples": "node ../../scripts/examples.js",
+    "bump": "node ../../scripts/examples.js yarn upgrade reorbit@latest reorbit-react@latest reorbit-redux-devtools@latest",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {

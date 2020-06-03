@@ -5,16 +5,15 @@ import { devToolsEnhancer } from 'redux-devtools-extension';
 import { createOrb } from 'reorbit';
 import './index.css';
 import { Fractal, FractalOrb, FractalOrbDef } from './Fractal';
-import redux, { reducer } from 'reorbit-redux';
+import { reducer, redux } from 'reorbit-redux';
 
-const store = createStore(reducer(FractalOrbDef), devToolsEnhancer({}));
+const key = 'FractalOrb';
+const store = createStore(reducer(FractalOrbDef, key), devToolsEnhancer({}));
 
-const orb = createOrb<FractalOrb>(FractalOrbDef, undefined, undefined, {
-  augmenters: [
-    redux({
-      store,
-    }),
-  ],
+const orb = createOrb<FractalOrb>(FractalOrbDef, undefined, key, {
+  extensions: [
+    redux(store)
+  ]
 });
 
 ReactDOM.render(<Fractal orb={orb} />, document.getElementById('root'));

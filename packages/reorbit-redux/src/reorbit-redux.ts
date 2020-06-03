@@ -1,11 +1,23 @@
 import { Orb, OrbDef, updateDependantValues, callDependantSubscribers,
-  callOrbSubscribers, Subscribable, Meta, createOrb, Subscription } from "reorbit";
+  callOrbSubscribers, Subscribable, Meta, Subscription, Extendables, createOrb } from "reorbit";
 import { Store, Unsubscribe, Action, createStore } from "redux";
-
 const { keys } = Object;
 
+const PATH_SEPARATOR = '.';
+
+export interface ReduxOrbDef<T extends Orb> extends OrbDef<T> {
+  redux: {
+    [key: string]: {
+      default: any,
+      transitions?: {
+        [key: string]: (state: any, ...args: any[]) => any,
+      },
+    },
+  },
+}
+
 interface ReduxMeta extends Meta {
-  original: ReduxOrbDef,
+  original: ReduxOrbDef<any>,
   reduxState?: any,
   reduxInitialized?: boolean,
   initialReduxState?: any,
@@ -21,17 +33,6 @@ interface ReduxMap {
   [key: string]: Redux,
 }
 
-export interface ReduxOrbDef extends OrbDef {
-  redux: {
-    [key: string]: {
-      default: any,
-      transitions?: {
-        [key: string]: (state: any, ...args: any[]) => any,
-      },
-    },
-  },
-}
-
 export interface ReduxOrb extends Orb {
   root: ReduxOrb,
   parent: ReduxOrb,
@@ -43,6 +44,21 @@ interface ReduxAction extends Action {
   reorbit: boolean,
   state: any,
 }
+
+export const reducer = (orbDef: ReduxOrbDef<any>, key: string) => {
+  const orb: ReduxOrb = createOrb(orbDef, undefined, key, {
+    extensions: [
+      redux(createStore(() => {}))
+    ]
+  });
+  return (state: any = orb.meta.reduxState, action: ReduxAction) => {
+    const { reorbit } = action;
+    if (reorbit === true) {
+      return action.state;
+    }
+    return state;
+  };
+};
 
 const objectWithoutKey = (object: any, key: string) => {
   const {[key]: deletedKey, ...otherKeys} = object;
@@ -74,31 +90,22 @@ function generateNextState(state: any, path: string[], newValue?: any): any {
   }
 }
 
-export const reducer = (orbDef: ReduxOrbDef) => {
-  const orb: ReduxOrb = createOrb(orbDef, undefined, undefined, {
-    augmenters: [
-      redux({
-        store: createStore(() => {}),
-      }),
-    ],
-  });
-  return (state: any = orb.meta.reduxState, action: ReduxAction) => {
-    const { reorbit } = action;
-    if (reorbit === true) {
-      return action.state;
-    }
-    return state;
-  };
-};
-
 function getRelevantState(state: any, path: string[]) {
   return path.reduce((acc, fragment) => {
     return acc && acc[fragment];
   }, state);
 }
 
-function bindRedux(orb: ReduxOrb, orbDef: ReduxOrbDef, store: Store, reducerKey?: string) {
-  const redux = orbDef.redux || {};
+function resolve(state: any, path: string[]) {
+  return path.reduce((acc, fragment) => {
+    return acc && acc[fragment];
+  }, state);
+};
+
+function bindRedux(orb: ReduxOrb, orbDef: OrbDef<any>, store: Store) {
+  const initialState = orb.meta.initialState && resolve(orb.meta.initialState, orb.meta.path);
+  const reudxOrbDef = orbDef as ReduxOrbDef<any>;
+  const redux = reudxOrbDef.redux || {};
   const reduxKeys = keys(redux);
   const initialOrbState: any = {};
   reduxKeys.forEach(reduxKey => {
@@ -109,17 +116,19 @@ function bindRedux(orb: ReduxOrb, orbDef: ReduxOrbDef, store: Store, reducerKey?
     };
 
     const newOrb = orb as any;
-    const initial = getRelevantState(orb.root!.meta.initialReduxState || {}, orb.meta.path.concat(reduxKey));
-    newOrb[reduxKey] = initial || reduxDef.default;
+    newOrb[reduxKey] = initialState || reduxDef.default;
+
+    newOrb[reduxKey] = initialState && initialState[reduxKey] ?
+      initialState[reduxKey] : redux[reduxKey].default;
     const transitions = reduxDef.transitions || {};
     initialOrbState[reduxKey] = redux[reduxKey].default;
 
     let process = false;
     keys(transitions).map((transitionKey) => {
-      orb.redux[reduxKey][transitionKey] = (...args: any[]) => {
-        const type = [reducerKey].concat(orb.meta.path, reduxKey, transitionKey).join('/');
+      newOrb[transitionKey] = (...args: any[]) => {
+        const type = orb.meta.path.concat(reduxKey, transitionKey).join(PATH_SEPARATOR);
         const storeState = store.getState();
-        const reorbitState = reducerKey ? storeState[reducerKey] : storeState;
+        const reorbitState = storeState;
         const reduxKeyState = getRelevantState(reorbitState, orb.meta.path)[reduxKey];
         const newValue = orb.meta.original.redux[reduxKey].transitions![transitionKey](reduxKeyState, ...args);
         if (newValue !== undefined && newValue !== reduxKeyState) {
@@ -138,10 +147,11 @@ function bindRedux(orb: ReduxOrb, orbDef: ReduxOrbDef, store: Store, reducerKey?
     });
     orb.redux[reduxKey].storeSubscription = store.subscribe(() => {
       const storeState = store.getState();
-      const reorbitState = reducerKey ? storeState[reducerKey] : storeState;
+      const reorbitState = storeState;
       const orbState = getRelevantState(reorbitState, orb.meta.path);
       if (process || (orbState && orbState[reduxKey] !== newOrb[reduxKey])) {
         newOrb[reduxKey] = orbState[reduxKey];
+        orb.root.meta.initialState = storeState;
         const updatedSubscriptions = new Set<Subscription>();
         updateDependantValues(orb.redux, reduxKey, updatedSubscriptions);
         if (updatedSubscriptions.size !== 0) {
@@ -155,51 +165,66 @@ function bindRedux(orb: ReduxOrb, orbDef: ReduxOrbDef, store: Store, reducerKey?
   orb.root!.meta.reduxState = generateNextState(orb.root!.meta.reduxState || {}, orb.meta.path, initialOrbState)
 }
 
-function onCreate(store: Store, reducerKey: string) {
-  return (orb: Orb, orbDef: OrbDef) => {
-    const reduxOrb = orb as ReduxOrb;
-    reduxOrb.redux = {};
-    if (!reduxOrb.root.meta.reduxInitialized) {
-      reduxOrb.root.meta.reduxInitialized = true;
-      reduxOrb.root.meta.postCreateStack = [];
-      const storeState = store.getState();
-      reduxOrb.root.meta.initialReduxState = reducerKey ? storeState[reducerKey] : storeState;
-    }
-    reduxOrb.root.meta.postCreateStack!.push(true);
-    bindRedux(reduxOrb, orbDef as ReduxOrbDef, store, reducerKey);
+export function redux(store: Store): (extensions: Extendables) => Extendables {
+  function onTransition(orb: Orb, stateKey: string, transitionKey: string, args: any[], newValue: any) {
+    const path = orb.meta.path.concat(stateKey, transitionKey);
+    const type = path.join(PATH_SEPARATOR);
+    store.dispatch({
+      type,
+      path,
+      args,
+      newValue,
+    });
   }
-}
-
-function postCreate() {
-  return (orb: Orb) => {
-    const reduxOrb = orb as ReduxOrb;
-    reduxOrb.root.meta.postCreateStack!.pop();
-    if (reduxOrb.root.meta.postCreateStack!.length === 0 && reduxOrb.root.meta.initialReduxState) {
-      reduxOrb.root.meta.initialReduxState = undefined;
-    }
+  return (extensions : Extendables) => {
+    const  { augmenters, destroyOrb } = extensions;
+    const ext: Extendables = {
+      augmenters: {
+        static: augmenters?.static!,
+        state: (orb: Orb, orbDef: OrbDef<any>) => {
+          const state = orbDef.state || {};
+          Object.keys(state).forEach(stateKey => {
+            const transitions = state[stateKey].transitions || {};
+            Object.keys(transitions).forEach(transitionKey => {
+              const originalTransition = transitions[transitionKey];
+              transitions[transitionKey] = (...args) => {
+                const newValue = originalTransition(...args);
+                onTransition(orb, stateKey, transitionKey, args, newValue);
+                return newValue;
+              }
+            });
+          });
+          augmenters?.state(orb, orbDef);
+        },
+        dynamic: (orb: Orb, orbDef: OrbDef<any>) => {
+          const reduxOrb = orb as ReduxOrb;
+          reduxOrb.redux = {};
+          if (!reduxOrb.root.meta.reduxInitialized) {
+            reduxOrb.root.meta.reduxInitialized = true;
+            reduxOrb.root.meta.postCreateStack = [];
+            const storeState = store.getState();
+            reduxOrb.root.meta.initialReduxState = storeState;
+          }
+          reduxOrb.root.meta.postCreateStack!.push(true);
+          bindRedux(reduxOrb, orbDef, store);
+          augmenters?.dynamic(orb, orbDef);
+          reduxOrb.root.meta.postCreateStack!.pop();
+          if (reduxOrb.root.meta.postCreateStack!.length === 0 && reduxOrb.root.meta.initialReduxState) {
+            reduxOrb.root.meta.initialReduxState = undefined;
+          }
+        },
+      },
+      destroyOrb(orb: Orb) {
+        destroyOrb && destroyOrb(orb);
+        const reduxOrb = orb as ReduxOrb;
+        keys(reduxOrb.redux).forEach((reduxKey) => {
+          const redux = reduxOrb.redux[reduxKey];
+          redux.subscriptions.clear();
+          redux.storeSubscription!();
+        });
+        reduxOrb.root!.meta.reduxState = generateNextState(reduxOrb.root!.meta.reduxState, orb.meta.path);
+      },
+    };
+    return ext;
   };
-}
-
-function destroy(orb: ReduxOrb) {
-  keys(orb.redux).forEach((reduxKey) => {
-    const redux = orb.redux[reduxKey];
-    redux.subscriptions.clear();
-    redux.storeSubscription!();
-  });
-  orb.root!.meta.reduxState = generateNextState(orb.root!.meta.reduxState, orb.meta.path);
-}
-
-function onDestory() {
-  return (orb: Orb) => {
-    destroy(orb as ReduxOrb);
-  }
-}
-
-export default function redux(options: any) {
-  return {
-    name: 'redux',
-    onCreate: onCreate(options.store, options.key),
-    postCreate: postCreate(),
-    onDestory: onDestory(),
-  }
 }

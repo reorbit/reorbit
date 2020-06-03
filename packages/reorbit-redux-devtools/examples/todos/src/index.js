@@ -3,10 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import { FractalRoot } from './FractalRoot';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <div>
+      <App />
+      <FractalRoot />
+    </div>
   </React.StrictMode>,
   document.getElementById('root')
 );
