@@ -1,0 +1,32 @@
+{
+  "name": "reorbit-redux-devtools",
+  "version": "0.0.1",
+  "description": "Reorbit integration with Redux Devtools",
+  "author": "Richard Heng <rheng@protonmail.com>",
+  "homepage": "https://github.com/reorbit/reorbit#readme",
+  "license": "MIT",
+  "main": "lib/reorbit-redux-devtools.js",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reorbit/reorbit.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/reorbit/reorbit/issues"
+  },
+  "peerDependencies": {
+    "reorbit": "^0.0.6"
+  },
+  "devDependencies": {
+    "reorbit": "^0.0.6"
+  }
+}
