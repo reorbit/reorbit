@@ -104,7 +104,7 @@ const AppOrbDef = {
 }
 
 const appOrb = createOrb(AppOrbDef);
-window.orb = appOrb;
+
 const AddTodo = () => {
   const { addTodoOrb } = appOrb;
   const { todoText, state, addTodo } = addTodoOrb;
