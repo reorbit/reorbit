@@ -1,4 +1,5 @@
-import { Orb, OrbDef, updateDependantValues, callDependantSubscribers, callOrbSubscribers, Subscribable, Meta, createOrb } from "reorbit";
+import { Orb, OrbDef, updateDependantValues, callDependantSubscribers,
+  callOrbSubscribers, Subscribable, Meta, createOrb, Subscription } from "reorbit";
 import { Store, Unsubscribe, Action, createStore } from "redux";
 
 const { keys } = Object;
@@ -124,7 +125,8 @@ function bindRedux(orb: ReduxOrb, orbDef: ReduxOrbDef, store: Store, reducerKey?
         if (newValue !== undefined && newValue !== reduxKeyState) {
           orb.root!.meta.reduxState = generateNextState(reorbitState, orb.meta.path.concat(reduxKey), newValue);
           newOrb[reduxKey] = newValue;
-          updateDependantValues(orb.redux, reduxKey);
+          const updatedSubscriptions = new Set<Subscription>();
+          updateDependantValues(orb.redux, reduxKey, updatedSubscriptions);
           process = true;
           store.dispatch({
             type,
@@ -140,8 +142,11 @@ function bindRedux(orb: ReduxOrb, orbDef: ReduxOrbDef, store: Store, reducerKey?
       const orbState = getRelevantState(reorbitState, orb.meta.path);
       if (process || (orbState && orbState[reduxKey] !== newOrb[reduxKey])) {
         newOrb[reduxKey] = orbState[reduxKey];
-        updateDependantValues(orb.redux, reduxKey);
-        callDependantSubscribers(orb.redux, reduxKey);
+        const updatedSubscriptions = new Set<Subscription>();
+        updateDependantValues(orb.redux, reduxKey, updatedSubscriptions);
+        if (updatedSubscriptions.size !== 0) {
+          callDependantSubscribers(orb.redux, reduxKey, updatedSubscriptions);
+        }
         callOrbSubscribers(orb);
         process = false;
       }

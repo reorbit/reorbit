@@ -35,7 +35,7 @@ export const FractalOrbDef: ReduxOrbDef = {
       dependencies: [
         (orb: FractalOrb) => orb.redux.value,
       ],
-      combiner: (orb: FractalOrb) => {
+      derive: (orb: FractalOrb) => {
         const orbs = [];
         for (let count = 0; count < orb.value; count += 1) {
           orbs.push(createOrb<FractalOrb>(FractalOrbDef, orb, String(count)));
