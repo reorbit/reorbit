@@ -32,16 +32,18 @@ const TodoListOrbDef = {
         (orb) => orb.state.todoList,
         (orb) => orb.parent.filterOrb.state.visibilityFilter,
       ],
-      combiner(orb, filterOrb) {
+      derive(orb, [, filterOrb]) {
         const { todoList } = orb;
         const { visibilityFilter } = filterOrb
         switch (visibilityFilter) {
           case VisibilityFilters.SHOW_ALL:
             return todoList
           case VisibilityFilters.SHOW_COMPLETED:
-            return todoList.filter(t => t.completed)
+            const completed = todoList.filter(t => t.completed);
+            return completed.length === todoList.length ? todoList : completed;
           case VisibilityFilters.SHOW_ACTIVE:
-            return todoList.filter(t => !t.completed)
+            const uncompleted = todoList.filter(t => !t.completed);
+            return uncompleted.length === todoList.length ? todoList : uncompleted;
           default:
             throw new Error('Unknown filter: ' + visibilityFilter)
         }
@@ -61,7 +63,7 @@ const FilterOrbDef = {
     visibilityFilter: {
       default: VisibilityFilters.SHOW_ALL,
       transitions: {
-        setVisibilityFilter(state, filter) {
+        setVisibilityFilter(...[,filter]) {
           return filter
         }
       }
@@ -74,7 +76,7 @@ const AddTodoOrbDef = {
     todoText: {
       default: '',
       transitions: {
-        update(state, newText) {
+        update(...[,newText]) {
           return newText;
         }
       }
@@ -88,39 +90,21 @@ const AddTodoOrbDef = {
 }
 
 const AppOrbDef = {
-  state: {
-    identity: {},
-  },
   dynamic: {
     addTodoOrb: {
-      dependencies: [
-        (orb) => orb.state.identity,
-      ],
-      combiner(orb) {
-        return createOrb(AddTodoOrbDef, orb, '0');
-      }
+      derive: orb => createOrb(AddTodoOrbDef, orb),
     },
     filterOrb: {
-      dependencies: [
-        (orb) => orb.state.identity,
-      ],
-      combiner(orb) {
-        return createOrb(FilterOrbDef, orb, '0');
-      }
+      derive: orb => createOrb(FilterOrbDef, orb),
     },
     todoListOrb: {
-      dependencies: [
-        (orb) => orb.state.identity,
-      ],
-      combiner(orb) {
-        return createOrb(TodoListOrbDef, orb, '0');
-      }
+      derive: orb => createOrb(TodoListOrbDef, orb),
     },
   }
 }
 
 const appOrb = createOrb(AppOrbDef);
-
+window.orb = appOrb;
 const AddTodo = () => {
   const { addTodoOrb } = appOrb;
   const { todoText, state, addTodo } = addTodoOrb;

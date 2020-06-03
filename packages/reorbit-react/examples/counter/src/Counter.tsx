@@ -44,7 +44,7 @@ export const CounterOrbDef: OrbDef = {
       dependencies: [
         (orb: CounterOrb) => orb.state.value,
       ],
-      combiner(orb: CounterOrb) {
+      derive(orb: CounterOrb) {
         return orb.value + 1;
       },
     },

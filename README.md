@@ -121,7 +121,7 @@ export const DynamicOrbDef: OrbDef = {
       dependencies: [
         (orb: DynamicOrb) => orb.state.value,
       ],
-      combiner(orb: DynamicOrb) {
+      derive(orb: DynamicOrb) {
         return orb.value * 2;
       },
     },
@@ -189,9 +189,10 @@ export const NewOrbDef: OrbDef = {
       dependencies: [
         (orb: NewOrbDef) => orb.state.value,
       ],
-      // The combiner takes in the orbs containing the subscrbed dependencies
+      // The derive function takes in the orbs containing the subscrbed dependencies
+      // The first argument will always be the current orb
       // The value returned from the function is assigned to the orb
-      combiner(orb: NewOrbDef) {
+      derive(orb: NewOrbDef, [orb: NewOrbDef]) {
         return orb.value * 2;
       },
     },

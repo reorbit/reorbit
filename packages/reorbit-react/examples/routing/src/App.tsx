@@ -52,7 +52,7 @@ export const RouterOrbDef = {
   },
   dynamic: {
     router: {
-      combiner: () => {
+      derive() {
         const routes = [
           {
             name: 'home',

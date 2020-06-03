@@ -71,7 +71,7 @@ export const SumOrbDef: OrbDef = {
       dependencies: [
         (orb: SumOrb) => orb.state.value,
       ],
-      combiner: (orb: SumOrb) => {
+      derive: (orb: SumOrb) => {
         const orbs = [];
         for (let count = 0; count < orb.value; count += 1) {
           orbs.push(createOrb<SumOrb>(SumOrbDef, orb, String(count)));
