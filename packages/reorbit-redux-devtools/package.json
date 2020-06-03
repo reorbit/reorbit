@@ -1,6 +1,6 @@
 {
   "name": "reorbit-redux-devtools",
-  "version": "0.0.1",
+  "version": "0.0.7",
   "description": "Reorbit integration with Redux Devtools",
   "author": "Richard Heng <rheng@protonmail.com>",
   "homepage": "https://github.com/reorbit/reorbit#readme",
@@ -27,6 +27,6 @@
     "reorbit": "^0.0.6"
   },
   "devDependencies": {
-    "reorbit": "^0.0.6"
+    "reorbit": "^0.0.7"
   }
 }
