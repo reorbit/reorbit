@@ -13,8 +13,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
-    "reorbit": "^0.0.6",
-    "reorbit-react": "^0.0.6",
+    "reorbit": "^0.0.8",
+    "reorbit-react": "^0.0.8",
     "router5": "^8.0.1",
     "router5-plugin-browser": "^8.0.1",
     "typescript": "~3.7.2"

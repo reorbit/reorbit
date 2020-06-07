@@ -9,9 +9,9 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1",
-    "reorbit": "^0.0.6",
-    "reorbit-react": "^0.0.6",
-    "reorbit-redux-devtools": "^0.0.7"
+    "reorbit": "^0.0.8",
+    "reorbit-react": "^0.0.8",
+    "reorbit-redux-devtools": "^0.0.8"
   },
   "scripts": {
     "start": "react-scripts start",
