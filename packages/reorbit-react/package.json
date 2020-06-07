@@ -23,6 +23,9 @@
     "url": "git+https://github.com/reorbit/reorbit.git"
   },
   "scripts": {
+    "compile": "node ../../scripts/compile.js",
+    "examples": "node ../../scripts/examples.js",
+    "bump": "node ../../scripts/examples.js yarn upgrade reorbit@latest reorbit-react@latest",
     "test": "echo \"Error: run tests from root\" && exit 1"
   },
   "bugs": {

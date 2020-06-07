@@ -1,17 +1,11 @@
-import { Orb, OrbDef, State, createOrb, subscribe } from "reorbit";
-
-interface CounterOrbState extends State {
-  increment: (value: number) => number;
-}
+import { Orb, OrbDef, createOrb, subscribe } from "reorbit";
 
 export interface CounterOrb extends Orb {
   value: number;
-  state: {
-    value: CounterOrbState,
-  },
+  increment: (value: number) => number;
 }
 
-export const CounterOrbDef: OrbDef = {
+export const CounterOrbDef: OrbDef<CounterOrb> = {
   state: {
     value: {
       default: 0,
@@ -30,5 +24,5 @@ subscribe(counterOrb, () => {
   console.log(`Value: ${counterOrb.value}`);
 });
 
-counterOrb.state.value.increment(1);
+counterOrb.increment(1);
 // Value: 1

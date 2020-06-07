@@ -12,7 +12,7 @@
     "@types/react-dom": "^16.9.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^3.4.1",
     "reorbit": "^0.0.6",
     "reorbit-react": "^0.0.6",
     "router5": "^8.0.1",

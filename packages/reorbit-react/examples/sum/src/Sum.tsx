@@ -1,35 +1,29 @@
 import React, { memo } from 'react';
-import { createOrb, Orb, OrbDef, State } from 'reorbit';
+import { createOrb, Orb, OrbDef } from 'reorbit';
 import { useOrb } from 'reorbit-react';
 
 const { keys } = Object;
-
-interface SumOrbStore extends State {
-  increment: (value: number) => number,
-  decrement: (value: number) => number,
-}
-
 export interface SumOrb extends Orb {
   value: number,
   sum: number,
-  state: {
-    value: SumOrbStore,
-    sum: SumOrbStore,
-  },
+  incrementValue: (value: number) => number,
+  decrementValue: (value: number) => number,
+  incrementSum: (value: number) => number,
+  decrementSum: (value: number) => number,
   children: SumOrb[],
   incrementWithChildren: (orb: SumOrb) => void,
   decrementWithChildren: (orb: SumOrb) => void,
 }
 
-export const SumOrbDef: OrbDef = {
+export const SumOrbDef: OrbDef<SumOrb> = {
   state: {
     value: {
       default: 0,
       transitions: {
-        increment(state: number, value: number): number {
+        incrementValue(state: number, value: number): number {
           return state + value;
         },
-        decrement(state: number, value: number): number {
+        decrementValue(state: number, value: number): number {
           return state - value;
         },
       },
@@ -37,10 +31,10 @@ export const SumOrbDef: OrbDef = {
     sum: {
       default: 0,
       transitions: {
-        increment(state: number, value: number): number {
+        incrementSum(state: number, value: number): number {
           return state + value;
         },
-        decrement(state: number, value: number): number {
+        decrementSum(state: number, value: number): number {
           return state - value;
         },
       },
@@ -48,10 +42,10 @@ export const SumOrbDef: OrbDef = {
   },
   static: {
     incrementWithChildren(orb: SumOrb) {
-      orb.state.value.increment(1);
+      orb.incrementValue(1);
       let curOrb = orb;
       while (curOrb) {
-        curOrb.state.sum.increment(1);
+        curOrb.incrementSum(1);
         curOrb = curOrb.parent as SumOrb;
       }
     },
@@ -60,10 +54,10 @@ export const SumOrbDef: OrbDef = {
       const lastChildSum = (lastChild && lastChild.sum) || 0;
       let curOrb = orb;
       while (curOrb) {
-        curOrb.state.sum.decrement(1 + lastChildSum);
+        curOrb.decrementSum(1 + lastChildSum);
         curOrb = curOrb.parent as SumOrb;
       }
-      orb.state.value.decrement(1);
+      orb.decrementValue(1);
     }
   },
   dynamic: {

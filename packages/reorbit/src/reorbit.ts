@@ -1,6 +1,8 @@
 const { keys, values } = Object;
 
-export interface OrbDef {
+const SUBSCRIPTIONS = Symbol('reorbit/subscriptions');
+
+export interface OrbDef<T extends Orb> {
   name?: String;
   state?: {
     [key: string]: {
@@ -15,8 +17,8 @@ export interface OrbDef {
   },
   dynamic?: {
     [key: string]: {
-      dependencies?: Array<(orb: Orb) => State>,
-      derive: (orb: Orb, args: Orb[]) => any,
+      dependencies?: Array<(orb: T) => Subscribable>,
+      derive: (orb: T, ...args: Array<Orb>) => any,
     },
   },
 }
@@ -24,7 +26,7 @@ export interface OrbDef {
 export interface Subscription {
   key: string,
   orb: Orb,
-  state: State,
+  subscribable: Subscribable,
 }
 
 export interface Subscribable {
@@ -32,44 +34,44 @@ export interface Subscribable {
   orb: Orb,
 }
 
-export interface State extends Subscribable {
-  [key: string]: any,
-}
-
-interface Dynamic extends Subscribable {
+export interface Dynamic extends Subscribable {
   dependencies: Array<(orb: Orb) => Subscribable>,
-  derive: (orb: Orb, args: Orb[]) => any,
+  derive: (orb: Orb, ...args: Orb[]) => any,
   depSubscriptions: Set<Subscription>,
   children: Map<string, Orb>,
   nextChildren: Map<string, Orb>,
 }
 
-interface Augmenter {
-  name: string,
-  onCreate: (orb: Orb, orbDef: OrbDef) => void,
-  onDestory: (orb: Orb) => void,
-  postCreate: (orb: Orb) => void,
+export interface Augmenters {
+  [key: string]: (orb: Orb, orbDef: OrbDef<any>) => void,
 }
 
-interface Options {
+export interface Extendables {
+  augmenters?: Augmenters,
+  destroyOrb?: (orb: Orb) => void,
+}
+
+export interface Options {
   state?: any,
-  augmenters?: Array<Augmenter>,
+  extensions?: Array<(extensions: Extendables) => Extendables>,
 }
 
 export interface Meta {
-  original: OrbDef,
+  original: OrbDef<any>,
   path: string[],
   options?: Options,
+  extenables?: Extendables,
   processingKey?: string,
   initialState?: any,
   immutableState?: any,
+  nonSerializableCache?: Map<string, Map<Symbol, any>>,
 }
 
-interface StateMap {
-  [key: string]: State,
+export interface StateMap {
+  [key: string]: Subscribable,
 }
 
-interface DynamicMap {
+export interface DynamicMap {
   [key: string]: Dynamic,
 }
 
@@ -112,17 +114,21 @@ function generateNextState(state: any, path: string[], newValue?: any): any {
   }
 }
 
-function bindStatic(orb: Orb, orbDef: OrbDef) {
-  const staticDef = orbDef.static || {};
-  const fnKeys = keys(staticDef);
-  for (let functionIndex = 0; functionIndex < fnKeys.length; functionIndex += 1) {
-    const fnKey = fnKeys[functionIndex];
-    const newOrb = orb as any;
-    newOrb[fnKey] = staticDef[fnKey];
-  }
+function updateImmudatebleState(orb: Orb, path: string[], newValue?: any) {
+  const { meta } = orb.root!;
+  meta.immutableState = generateNextState(meta.immutableState || {}, path, newValue);
 }
 
-function bindState(orb: Orb, orbDef: OrbDef, initialState: any) {
+function bindStatic(orb: Orb, orbDef: OrbDef<any>) {
+  const staticDef = orbDef.static || {};
+  keys(staticDef).forEach(staticKey => {
+    const newOrb = orb as any;
+    newOrb[staticKey] = staticDef[staticKey];
+  });
+}
+
+function bindState(orb: Orb, orbDef: OrbDef<any>) {
+  const initialState = orb.meta.initialState && resolve(orb.meta.initialState, orb.meta.path);
   const state = orbDef.state || {};
   const newState: { [key: string]: any } = {};
   keys(state).forEach(stateKey => {
@@ -131,27 +137,28 @@ function bindState(orb: Orb, orbDef: OrbDef, initialState: any) {
       subscriptions: new Set(),
     };
     const newOrb = orb as any;
-    newOrb[stateKey] = initialState && initialState[stateKey] ? initialState[stateKey] : state[stateKey].default;
+    newOrb[stateKey] = initialState && initialState[stateKey] ?
+      initialState[stateKey] : state[stateKey].default;
     newState[stateKey] = newOrb[stateKey];
     const transitions = state[stateKey].transitions || {};
     keys(transitions).forEach(transitionKey => {
-      orb.state[stateKey][transitionKey] = (...args: any[]) => {
+      const transition = transitions[transitionKey];
+      newOrb[transitionKey] = (...args: any[]) => {
         const prevState = newOrb[stateKey];
-        newOrb[stateKey] = transitions[transitionKey](newOrb[stateKey], ...args);
-        if (newOrb[stateKey] !== prevState) {
-          const path = orb.meta.path.concat(stateKey);
-          orb.root!.meta.immutableState = generateNextState(orb.root!.meta.immutableState || {}, path, newOrb[stateKey]);
-          const updatedSubscriptions = new Set<Subscription>();
-          updateDependantValues(orb.state, stateKey, updatedSubscriptions);
-          if (updatedSubscriptions.size !== 0) {
-            callDependantSubscribers(orb.state, stateKey, updatedSubscriptions);
-          }
-          callOrbSubscribers(orb);
+        newOrb[stateKey] = transition(newOrb[stateKey], ...args);
+        if (newOrb[stateKey] === prevState) return;
+        const path = orb.meta.path.concat(stateKey);
+        updateImmudatebleState(orb, path, newOrb[stateKey]);
+        const updatedSubscriptions = new Set<Subscription>();
+        updateDependantValues(orb.state, stateKey, updatedSubscriptions);
+        if (updatedSubscriptions.size !== 0) {
+          callDependantSubscribers(orb.state, stateKey, updatedSubscriptions);
         }
+        callOrbSubscribers(orb);
       };
     });
   });
-  orb.root!.meta.immutableState = generateNextState(orb.root!.meta.immutableState || {}, orb.meta.path, newState);
+  updateImmudatebleState(orb, orb.meta.path, newState)
 }
 
 export function updateDependantValues(
@@ -159,14 +166,12 @@ export function updateDependantValues(
   key: string,
   updatedSubscriptions: Set<Subscription>,
 ) {
-  subscribable[key].subscriptions
-    .forEach((dependencySubscription: Subscription) => {
-      const valUpdated = updateDependantValue(dependencySubscription.orb, dependencySubscription.key);
-      if (valUpdated) {
-        updatedSubscriptions.add(dependencySubscription);
-        updateDependantValues(dependencySubscription.orb.dynamic, dependencySubscription.key, updatedSubscriptions);
-      }
-    });
+  subscribable[key].subscriptions.forEach((depSub: Subscription) => {
+    const valUpdated = updateDependantValue(depSub.orb, depSub.key);
+    if (!valUpdated) return;
+    updatedSubscriptions.add(depSub);
+    updateDependantValues(depSub.orb.dynamic, depSub.key, updatedSubscriptions);
+  });
 }
 
 export function callDependantSubscribers(
@@ -174,21 +179,20 @@ export function callDependantSubscribers(
   key: string,
   updatedSubscriptions: Set<Subscription>,
 ) {
-  subscribable[key].subscriptions.forEach((dependencySubscription: Subscription) => {
-    if (updatedSubscriptions.has(dependencySubscription)) {
-      callOrbSubscribers(dependencySubscription.orb);
-      callDependantSubscribers(dependencySubscription.orb.dynamic, dependencySubscription.key, updatedSubscriptions);
-    }
+  subscribable[key].subscriptions.forEach((depSub: Subscription) => {
+    if (!updatedSubscriptions.has(depSub)) return;
+    callOrbSubscribers(depSub.orb);
+    callDependantSubscribers(depSub.orb.dynamic, depSub.key, updatedSubscriptions);
   });
 }
 
-function deleteStaleChildren(orb: Orb) {
+function destoryStaleChildren(orb: Orb) {
   const key = orb.meta.processingKey!;
   const prevChildren = orb.dynamic[key].children;
   const prevChildrenKeys = Array.from(prevChildren.keys());
   const curChildren = orb.dynamic[key].nextChildren;
   const curChildrenKeysSet = new Set(curChildren.keys());
-  const difference = new Set([...prevChildrenKeys].filter(x => !curChildrenKeysSet.has(x)));
+  const difference = new Set([...prevChildrenKeys].filter(key => !curChildrenKeysSet.has(key)));
   difference.forEach(key => {
     destroyOrb(prevChildren.get(key)!);
   });
@@ -196,7 +200,7 @@ function deleteStaleChildren(orb: Orb) {
   orb.dynamic[key].nextChildren = new Map();
 }
 
-export function updateDependantValue(orb: Orb, key: string): boolean {
+function updateDependantValue(orb: Orb, key: string): boolean {
   orb.meta.processingKey = key;
   const dynamicDef = orb.dynamic[key] || { dependencies: null };
   const derive = dynamicDef.derive;
@@ -207,10 +211,10 @@ export function updateDependantValue(orb: Orb, key: string): boolean {
   const depdencyOrbs = dependencyStates.map(state => {
     return state.orb;
   });
-  const combined = derive && derive(orb, depdencyOrbs);
+  const combined = derive && derive(orb, ...depdencyOrbs);
   const newOrb = orb as any;
   const prevValue = newOrb[key];
-  deleteStaleChildren(orb);
+  destoryStaleChildren(orb);
   newOrb[key] = combined;
   orb.meta.processingKey = undefined;
   return newOrb[key] !== prevValue;
@@ -222,7 +226,7 @@ export function callOrbSubscribers(orb: Orb) {
   });
 }
 
-function bindDynamic(orb: Orb, orbDef: OrbDef) {
+function bindDynamic(orb: Orb, orbDef: OrbDef<any>) {
   const dynamic = orbDef.dynamic || {};
   keys(dynamic).forEach(dynamicKey => {
     const dynamicDef = dynamic[dynamicKey];
@@ -247,31 +251,25 @@ function bindDynamic(orb: Orb, orbDef: OrbDef) {
   });
 }
 
-export function subscribeDependency(orb: Orb, key: string, dependencyState: State) {
+function subscribeDependency(orb: Orb, key: string, dependencySub: Subscribable) {
   const dependencySubscription: Subscription = {
     key,
     orb: orb,
-    state: dependencyState,
+    subscribable: dependencySub,
   };
-  dependencyState.subscriptions.add(dependencySubscription);
+  dependencySub.subscriptions.add(dependencySubscription);
   orb.dynamic[key].depSubscriptions.add(dependencySubscription);
 }
 
 function resolve(state: any, path: string[]) {
   return path.reduce((acc, fragment) => {
-    return acc[fragment];
+    return acc && acc[fragment];
   }, state);
 };
 
-export function createOrb<T extends Orb>(orbDef: OrbDef, parent?: Orb, key?: string, options?: Options): T {
-  if (parent && parent.meta.processingKey && key) {
-    const previousChildren = parent.dynamic[parent.meta.processingKey].children;
-    if (previousChildren.has(key)) {
-      const currentChild = previousChildren.get(key);
-      parent.dynamic[parent.meta.processingKey].nextChildren.set(key, currentChild as T);
-      return currentChild as T;
-    }
-  }
+export function createOrb<T extends Orb>(orbDef: OrbDef<T>, parent?: Orb, key?: string, options?: Options): T {
+  const cachedOrb = useCachedOrb<T>(parent, key);
+  if (cachedOrb) return cachedOrb;
   const orb: Orb = {
     parent,
     subscriptions: new Set(),
@@ -281,20 +279,67 @@ export function createOrb<T extends Orb>(orbDef: OrbDef, parent?: Orb, key?: str
       path: [],
       original: orbDef,
       options: options || {},
-    }
+      nonSerializableCache: new Map<string, Map<Symbol, any>>()
+    },
   };
   orb.root = parent && parent.root || orb;
   orb.meta.path = parent ? parent.meta.path.concat(parent.meta.processingKey!) : [];
-  (parent && key) && orb.meta.path.push(key);
+  key && orb.meta.path.push(key);
   orb.meta.initialState = options?.state || orb.root.meta.initialState;
+  restoreSubscriptions(orb);
+  processExtensions(orb, options);
   deserialize(orb, orb.meta.initialState);
   parent && parent.meta.processingKey && key &&
     parent.dynamic[parent!.meta.processingKey].nextChildren.set(key, orb as T);
   return orb as T;
-};
+}
 
-export function destroyOrb(orb: Orb) {
+function restoreSubscriptions(orb: Orb) {
+  const cachedSubscriptionSet = cacheGet(orb, SUBSCRIPTIONS) as Set<() => void>;
+  if (cachedSubscriptionSet) {
+    cachedSubscriptionSet?.forEach(subscription => {
+      orb.subscriptions.add(subscription);
+    });
+  } else {
+    const newSet = new Set<() => void>();
+    cacheSet(orb, SUBSCRIPTIONS, newSet);
+  }
+}
+
+function useCachedOrb<T extends Orb>(parent?: Orb, key?: string): T | undefined {
+  if (!(parent && parent.meta.processingKey && key)) return;
+  const previousChildren = parent.dynamic[parent.meta.processingKey].children;
+  if (!previousChildren.has(key)) return;
+  const currentChild = previousChildren.get(key);
+  parent.dynamic[parent.meta.processingKey].nextChildren.set(key, currentChild as T);
+  return currentChild as T;
+}
+
+function processExtensions(orb: Orb, options?: Options) {
+  if (orb.root!.meta.extenables) return;
+  const augmenters: Augmenters = {
+    static: bindStatic,
+    state: bindState,
+    dynamic: bindDynamic,
+  };
+  const processedAugmenters = options?.extensions?.reduce((acc, plugin) => {
+    const extended = plugin(acc).augmenters;
+    return extended ? { augmenters: extended } : acc;
+  }, { augmenters: augmenters });
+  const destroyOrb: { destroyOrb: (orb: Orb) => void } = { destroyOrb: destroyOrbBase };
+  const processedDestroyOrb = options?.extensions?.reduce((acc, plugin) => {
+    const extended = plugin(acc).destroyOrb;
+    return extended ? { destroyOrb: extended } : acc;
+  }, destroyOrb);
+  orb.root!.meta.extenables = {
+    augmenters: processedAugmenters?.augmenters ? processedAugmenters?.augmenters : augmenters,
+    destroyOrb: processedDestroyOrb?.destroyOrb ? processedDestroyOrb?.destroyOrb : destroyOrbBase,
+  };
+}
+
+function destroyOrbBase(orb: Orb) {
   orb.subscriptions.clear();
+  cacheClear(orb);
   values(orb.state).forEach((state) => {
     state.subscriptions.clear();
   });
@@ -305,18 +350,19 @@ export function destroyOrb(orb: Orb) {
         destroyOrb(child);
       });
     });
-  orb.root!.meta.immutableState = generateNextState(orb.root!.meta.immutableState || {}, orb.meta.path);
-  const augmenters = orb.root!.meta.options?.augmenters;
-  augmenters && augmenters.forEach(augmenter => {
-    augmenter.onDestory(orb);
-  });
   keys(orb.dynamic)
     .map((key) => orb.dynamic[key].depSubscriptions)
     .forEach((depSubscription) => {
       depSubscription.forEach((subscription) => {
-        subscription.state.subscriptions.delete(subscription);
+        subscription.subscribable.subscriptions.delete(subscription);
       });
     });
+  updateImmudatebleState(orb, orb.meta.path);
+}
+
+export function destroyOrb(orb: Orb) {
+  const extendedDestroyOrb = orb.root?.meta.extenables?.destroyOrb!;
+  extendedDestroyOrb(orb);
 };
 
 export function serialize(orb: Orb) {
@@ -326,23 +372,40 @@ export function serialize(orb: Orb) {
 export function deserialize(orb: Orb, state: any) {
   const orbDef = orb.meta.original;
   orb.meta.initialState = state;
-  bindStatic(orb, orbDef);
-  bindState(orb, orbDef, orb.meta.initialState && resolve(orb.meta.initialState, orb.meta.path));
-  const augmenters = orb.root!.meta.options?.augmenters;
-  augmenters && augmenters.forEach(augmenter => {
-    augmenter.onCreate(orb, orbDef);
-  });
-  bindDynamic(orb, orbDef);
-  augmenters && augmenters.forEach(augmenter => {
-    augmenter.postCreate(orb);
+  const augmenters = orb.root?.meta.extenables?.augmenters!;
+  keys(augmenters).forEach(augmenterKey => {
+    augmenters[augmenterKey](orb, orbDef);
   });
   orb.meta.initialState = undefined;
 }
 
 export function subscribe(orb: Orb, update: () => void) {
   orb.subscriptions.add(update);
+  const subscriptionSet = cacheGet(orb, SUBSCRIPTIONS) as Set<() => void> || new Set<() => void>();
+  subscriptionSet.add(update);
+  cacheSet(orb, SUBSCRIPTIONS, subscriptionSet);
   const unsubscribe = () => {
     orb.subscriptions.delete(update);
   }
   return unsubscribe;
 };
+
+export function cacheSet(orb: Orb, key: Symbol, value: any) {
+  const path = JSON.stringify(orb.meta.path);
+  const { nonSerializableCache } =  orb.root!.meta;
+  const map = nonSerializableCache?.get(path) || new Map<Symbol, any>();
+  map.set(key, value);
+  nonSerializableCache?.set(path, map);
+}
+
+export function cacheGet(orb: Orb, key: Symbol) {
+  const path = JSON.stringify(orb.meta.path);
+  const { nonSerializableCache } =  orb.root!.meta;
+  return nonSerializableCache?.get(path)?.get(key);
+}
+
+export function cacheClear(orb: Orb) {
+  const path = JSON.stringify(orb.meta.path);
+  const { nonSerializableCache } =  orb.root!.meta;
+  nonSerializableCache?.delete(path);
+}

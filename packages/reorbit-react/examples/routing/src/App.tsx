@@ -1,7 +1,7 @@
 import React from 'react';
 import createRouter, { Router, State as RouterState } from 'router5';
 import browserPlugin from 'router5-plugin-browser';
-import { Orb, State } from 'reorbit';
+import { Orb } from 'reorbit';
 import { useOrb } from 'reorbit-react';
 
 import { orb } from './index';
@@ -10,15 +10,9 @@ import './App.css';
 
 const { useEffect } = React;
 
-interface RouterOrbStore extends State {
-  routeChanged: (value: RouterState) => RouterState,
-};
-
 export interface RouterOrb extends Orb {
   route: RouterState,
-  state: {
-    route: RouterOrbStore,
-  },
+  routeChanged: (value: RouterState) => RouterState,
   startRouter: (orb: RouterOrb) => void,
   navigate: (orb: RouterOrb, path: string, params: object) => void,
   isActive: (orb: RouterOrb, route: string) => boolean,
@@ -39,7 +33,7 @@ export const RouterOrbDef = {
   static: {
     startRouter(orb: RouterOrb) {
       orb.router.subscribe(obj => {
-        orb.state.route.routeChanged(obj.route);
+        orb.routeChanged(obj.route);
       })
       orb.router.start();
     },
