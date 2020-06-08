@@ -6,20 +6,23 @@ export function immer({ augmenters }: Extendables): Extendables {
     augmenters: {
       static: augmenters?.static!,
       state: (orb: Orb, orbDef: OrbDef<any>) => {
-        augmenters?.state(orb, orbDef);
         const state = orbDef.state || {};
         Object.keys(state).forEach(stateKey => {
           const transitions = state[stateKey].transitions || {};
           Object.keys(transitions).forEach(transitionKey => {
             const transitionDefinition = transitions[transitionKey];
-            const curOrb = orb as any;
-            curOrb[transitionKey] = (...args: any[]) => {
-              return produce(curOrb[stateKey], (draftState: any) => {
-                transitionDefinition(draftState, ...args);
-              });
+            transitions[transitionKey] = (state, ...args: any[]) => {
+              if (typeof state === 'object' && state !== null) {
+                return produce(state, (draftState: any) => {
+                  transitionDefinition(draftState, ...args);
+                });
+              } else {
+                return transitionDefinition(state, ...args);
+              }
             };
           });
         });
+        augmenters?.state(orb, orbDef);
       },
       dynamic: augmenters?.dynamic!,
     },
