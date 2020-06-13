@@ -1,7 +1,7 @@
 {
   "name": "reorbit-react",
   "version": "0.0.9",
-  "description": "React integration with Reorbit.",
+  "description": "Reorbit integration with React",
   "keywords": [
     "react",
     "reorbit"

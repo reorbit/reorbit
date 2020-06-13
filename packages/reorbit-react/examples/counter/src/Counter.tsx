@@ -1,14 +1,20 @@
 import React from 'react';
 import { Orb, OrbDef } from "reorbit";
-import { useOrb } from "reorbit-react";
+import { withOrb } from "reorbit-react";
 
-export interface CounterOrb extends Orb {
+export interface CounterOrb extends Orb, CounterProps {}
+
+interface CounterProps {
   value: number,
   increment: (value: number) => number;
   decrement: (value: number) => number;
   valuePlusOne: number,
   double: (value: number) => number,
   incrementAsync: (orb: CounterOrb, value: number) => void,
+}
+
+interface CounterPropsWithOrb extends CounterProps {
+  orb: CounterOrb;
 }
 
 export const CounterOrbDef: OrbDef<CounterOrb> = {
@@ -45,16 +51,18 @@ export const CounterOrbDef: OrbDef<CounterOrb> = {
   },
 }
 
-export function Counter({ orb }: { orb: CounterOrb}) {
-  const { value, valuePlusOne, increment, decrement, double, incrementAsync } = orb;
-  useOrb(orb);
-
-  return (
-    <div>
-      Value ({value}) ({valuePlusOne}) ({double(value)})
-      {<button onClick={() => increment(1)}>+</button>}
-      {<button onClick={() => decrement(1)}>-</button>}
-      {<button onClick={() => incrementAsync(orb, 1)}>Async</button>}
-    </div>
-  );
+class CounterComponent extends React.Component<CounterPropsWithOrb> {
+  render() {
+    const { orb, value, valuePlusOne, increment, decrement, double, incrementAsync } = this.props;
+    return (
+      <div>
+        Value ({value}) ({valuePlusOne}) ({double(value)})
+        {<button onClick={() => increment(1)}>+</button>}
+        {<button onClick={() => decrement(1)}>-</button>}
+        {<button onClick={() => incrementAsync(orb, 1)}>Async</button>}
+      </div>
+    );
+  }
 }
+
+export const Counter = withOrb(CounterComponent);

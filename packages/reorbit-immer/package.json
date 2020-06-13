@@ -1,7 +1,7 @@
 {
   "name": "reorbit-immer",
   "version": "0.0.9",
-  "description": "> TODO: description",
+  "description": "Immer integration with Reorbit",
   "author": "Richard Heng <rheng@protonmail.com>",
   "homepage": "https://github.com/reorbit/reorbit#readme",
   "license": "MIT",
