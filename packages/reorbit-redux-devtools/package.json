@@ -1,7 +1,7 @@
 {
   "name": "reorbit-redux-devtools",
   "version": "0.0.9",
-  "description": "Reorbit integration with Redux Devtools",
+  "description": "Redux Devtools integration with Reorbit",
   "author": "Richard Heng <rheng@protonmail.com>",
   "homepage": "https://github.com/reorbit/reorbit#readme",
   "license": "MIT",

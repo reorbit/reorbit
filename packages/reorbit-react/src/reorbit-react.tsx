@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, ComponentType } from "react";
 import { subscribe, Orb } from "reorbit";
 
 export function getOrb<T extends Orb, U extends Orb>(orb: U, selector: (root: U) => T): T {
@@ -15,3 +15,14 @@ export const useOrb = <T extends Orb>(orb: T) => {
     }
   }, [mouted]);
 };
+
+interface OrbProps {
+  orb: Orb;
+}
+
+export function withOrb<T extends OrbProps>(Wrapped: ComponentType<any>) {
+  return (props: T) => {
+    useOrb(props.orb);
+    return <Wrapped {...props.orb} {...props} />;
+  }
+}
