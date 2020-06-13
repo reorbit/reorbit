@@ -10,9 +10,9 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "reorbit": "^0.0.9",
-    "reorbit-immer": "^0.0.9",
-    "reorbit-react": "^0.0.9"
+    "reorbit": "^0.0.10",
+    "reorbit-immer": "^0.0.10",
+    "reorbit-react": "^0.0.10"
   },
   "scripts": {
     "start": "react-scripts start",

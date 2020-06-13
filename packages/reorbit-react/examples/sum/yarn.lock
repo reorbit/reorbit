@@ -8877,15 +8877,15 @@ renderkid@^2.0.1:
     strip-ansi "^3.0.0"
     utila "^0.4.0"
 
-reorbit-react@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/reorbit-react/-/reorbit-react-0.0.9.tgz#fc89c58814178b32799a99f4ee31e259ff329edb"
-  integrity sha512-5GpnkNRQkZdYKnN8xR//llWsoqqfUu+7Z2j5/vuMRWuEjRNsEdqFh/GxZJVPdKIcBcAG8EMlhw8oPL90iKh3gw==
+reorbit-react@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/reorbit-react/-/reorbit-react-0.0.10.tgz#383800ddc7f1d8772ee4dac3f45aa6f4279cda57"
+  integrity sha512-gJ1szs7p6IhymIpFC+0aPuH0cbCwxFzPLZc/BiEnvpr5KCNJPpSM7StDYJYTQjfa/0T20q25VgcukC0/u3HGZA==
 
-reorbit@^0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/reorbit/-/reorbit-0.0.9.tgz#8a4a2cced908afc8b89b135b5990690b4f8d498b"
-  integrity sha512-jxooFWfnmpw/qX8ddt8whmPUee+uvsXj6A2DXVunDqgkiMJ7+YHYz/Q9eUJhlgnKPXP2gvlifub5ogwXQjjXQw==
+reorbit@^0.0.10:
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/reorbit/-/reorbit-0.0.10.tgz#1b9cf3d4fbd5cae97775e2acf4a1dcf94ed51b63"
+  integrity sha512-2MX5a8XbNGULghML3pC5CgrRojLR53yk2x5FaqUWr1YZM1LkFOfGw0q94vLF9vg1PEIMdJYbOZnpaV1qeVGHog==
 
 repeat-element@^1.1.2:
   version "1.1.3"
