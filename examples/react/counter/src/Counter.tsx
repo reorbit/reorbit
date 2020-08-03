@@ -1,6 +1,6 @@
 import React from 'react';
-import { Orb, OrbDef } from "reorbit";
-import { withOrb } from "react-reorbit";
+import { Orb, OrbDef } from "@reorbit/core";
+import { withOrb } from "@reorbit/react";
 
 export interface CounterOrb extends Orb, CounterProps {}
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { createOrb } from 'reorbit';
+import { createOrb } from '@reorbit/core';
 import './index.css';
 import { Fractal, FractalOrb, FractalOrbDef } from './Fractal';
 

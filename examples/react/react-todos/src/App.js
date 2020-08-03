@@ -1,6 +1,6 @@
 import React from 'react';
-import { createOrb } from 'reorbit';
-import { useOrb } from 'react-reorbit';
+import { createOrb } from '@reorbit/core';
+import { useOrb } from '@reorbit/react';
 import { AddTodoOrbDef, AddTodo } from './app/AddTodo';
 import { FilterOrbDef, Footer } from './app/Footer';
 import { TodoListOrbDef, VisibleTodoList } from './app/VisibleTodoList';

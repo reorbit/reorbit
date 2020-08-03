@@ -1,6 +1,6 @@
 import React from 'react';
 import { VisibilityFilters } from './Footer';
-import { useOrb } from 'react-reorbit';
+import { useOrb } from '@reorbit/react';
 
 export const TodoListOrbDef = {
   state: {

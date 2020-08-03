@@ -1,8 +1,8 @@
 import React from 'react';
 import createRouter, { Router, State as RouterState } from 'router5';
 import browserPlugin from 'router5-plugin-browser';
-import { Orb } from 'reorbit';
-import { useOrb } from 'react-reorbit';
+import { Orb } from '@reorbit/core';
+import { useOrb } from '@reorbit/react';
 
 import { orb } from './index';
 

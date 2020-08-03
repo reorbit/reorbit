@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "@reorbit/core": "^0.0.10",
-    "redux": "^4.0.1"
+    "redux": "^4.0.1",
+    "typescript": "^3.9.7"
   }
 }

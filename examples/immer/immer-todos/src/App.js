@@ -1,7 +1,7 @@
 import React from 'react';
-import { createOrb } from 'reorbit';
-import { useOrb } from 'react-reorbit';
-import { immer } from 'reorbit-immer';
+import { createOrb } from '@reorbit/core';
+import { useOrb } from '@reorbit/react';
+import { immer } from '@reorbit/immer';
 
 const TodoListOrbDef = {
   state: {

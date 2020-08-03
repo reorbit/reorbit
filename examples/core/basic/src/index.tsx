@@ -1,4 +1,4 @@
-import { Orb, OrbDef, createOrb, subscribe } from "reorbit";
+import { Orb, OrbDef, createOrb, subscribe } from "@reorbit/core";
 
 export interface CounterOrb extends Orb {
   value: number;

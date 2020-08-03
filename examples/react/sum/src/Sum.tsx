@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
-import { createOrb, Orb, OrbDef } from 'reorbit';
-import { useOrb } from 'react-reorbit';
+import { createOrb, Orb, OrbDef } from '@reorbit/core';
+import { useOrb } from '@reorbit/react';
 
 const { keys } = Object;
 export interface SumOrb extends Orb {

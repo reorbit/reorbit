@@ -9,8 +9,8 @@
   "author": "Richard Heng <rheng@protonmail.com>",
   "homepage": "https://github.com/reorbit/reorbit#README",
   "license": "MIT",
-  "main": "./lib/reorbit.js",
-  "types": "./lib/reorbit.d.ts",
+  "main": "./lib/reorbit-core.js",
+  "types": "./lib/reorbit-core.d.ts",
   "directories": {
     "lib": "lib",
     "test": "__tests__"
@@ -28,5 +28,8 @@
   },
   "bugs": {
     "url": "https://github.com/reorbit/reorbit/issues"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.7"
   }
 }

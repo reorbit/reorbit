@@ -1,5 +1,5 @@
 import React from 'react';
-import { useOrb } from 'react-reorbit';
+import { useOrb } from '@reorbit/react';
 
 export const AddTodoOrbDef = {
   state: {

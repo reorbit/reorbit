@@ -5,6 +5,7 @@
     "lerna": "^3.21.0"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "examples/**"
   ]
 }

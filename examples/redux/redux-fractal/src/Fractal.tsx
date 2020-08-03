@@ -1,7 +1,7 @@
 import React from 'react';
-import { createOrb } from 'reorbit';
-import { useOrb } from 'react-reorbit';
-import { ReduxOrb, ReduxOrbDef } from '../../../lib/reorbit-redux';
+import { createOrb } from '@reorbit/core';
+import { useOrb } from '@reorbit/react';
+import { ReduxOrb, ReduxOrbDef } from '@reorbit/redux';
 
 export interface FractalOrb extends ReduxOrb {
   value: number,

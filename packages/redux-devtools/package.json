@@ -29,6 +29,7 @@
     "@reorbit/core": "^0.0.10"
   },
   "devDependencies": {
-    "@reorbit/core": "^0.0.10"
+    "@reorbit/core": "^0.0.10",
+    "typescript": "^3.9.7"
   }
 }

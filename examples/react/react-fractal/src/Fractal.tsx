@@ -1,6 +1,6 @@
 import React from 'react';
-import { createOrb, Orb, OrbDef } from 'reorbit';
-import { useOrb } from 'react-reorbit';
+import { createOrb, Orb, OrbDef } from '@reorbit/core';
+import { useOrb } from '@reorbit/react';
 
 export interface FractalOrb extends Orb {
   value: number,
