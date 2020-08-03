@@ -1,11 +1,11 @@
 {
   "name": "redux-fractal",
-  "version": "0.1.0",
+  "version": "0.0.11",
   "private": true,
   "dependencies": {
-    "@reorbit/core": "^0.0.10",
-    "@reorbit/react": "^0.0.10",
-    "@reorbit/redux": "^0.0.10",
+    "@reorbit/core": "^0.0.11",
+    "@reorbit/react": "^0.0.11",
+    "@reorbit/redux": "^0.0.11",
     "@types/jest": "24.0.13",
     "@types/node": "12.0.4",
     "@types/react": "16.8.19",
@@ -36,6 +36,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {}
+  }
 }

@@ -1,10 +1,10 @@
 {
   "name": "react-todos",
-  "version": "0.1.0",
+  "version": "0.0.11",
   "private": true,
   "dependencies": {
-    "@reorbit/core": "^0.0.10",
-    "@reorbit/react": "^0.0.10",
+    "@reorbit/core": "^0.0.11",
+    "@reorbit/react": "^0.0.11",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "^3.4.1"
