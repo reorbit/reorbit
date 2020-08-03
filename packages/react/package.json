@@ -1,0 +1,41 @@
+{
+  "name": "@react/react",
+  "version": "0.0.10",
+  "description": "Reorbit integration with React",
+  "keywords": [
+    "react",
+    "reorbit"
+  ],
+  "author": "Richard Heng <rheng@protonmail.com>",
+  "homepage": "https://github.com/reorbit/reorbit#README",
+  "license": "MIT",
+  "main": "./lib/react-reorbit.js",
+  "types": "./lib/react-reorbit.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reorbit/reorbit.git"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.js",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/reorbit/reorbit/issues"
+  },
+  "peerDependencies": {
+    "@reorbit/core": "^0.0.10",
+    "react": "^16.13.1"
+  },
+  "devDependencies": {
+    "@reorbit/core": "^0.0.10",
+    "@types/react": "^16.9.35",
+    "react": "^16.13.1"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "@reorbit/core",
+  "version": "0.0.10",
+  "description": "Reorbit is a library that enables application state to be structured, dynamic, and composable.",
+  "keywords": [
+    "state",
+    "management"
+  ],
+  "author": "Richard Heng <rheng@protonmail.com>",
+  "homepage": "https://github.com/reorbit/reorbit#README",
+  "license": "MIT",
+  "main": "./lib/reorbit.js",
+  "types": "./lib/reorbit.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reorbit/reorbit.git"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.js",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/reorbit/reorbit/issues"
+  }
+}
