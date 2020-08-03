@@ -1,0 +1,37 @@
+{
+  "name": "@reorbit/immer",
+  "version": "0.0.10",
+  "description": "Immer integration with Reorbit",
+  "author": "Richard Heng <rheng@protonmail.com>",
+  "homepage": "https://github.com/reorbit/reorbit#readme",
+  "license": "MIT",
+  "main": "./lib/reorbit-immer.js",
+  "types": "./lib/reorbit-immer.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reorbit/reorbit.git"
+  },
+  "scripts": {
+    "build": "node ../../scripts/build.js",
+    "test": "echo \"Error: run tests from root\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/reorbit/reorbit/issues"
+  },
+  "peerDependencies": {
+    "@reorbit/core": "^0.0.10",
+    "immer": "^7.0.7"
+  },
+  "devDependencies": {
+    "@reorbit/core": "^0.0.10",
+    "immer": "^7.0.7",
+    "typescript": "^3.9.7"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "name": "redux-fractal",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@reorbit/core": "^0.0.10",
+    "@reorbit/react": "^0.0.10",
+    "@reorbit/redux": "^0.0.10",
+    "@types/jest": "24.0.13",
+    "@types/node": "12.0.4",
+    "@types/react": "16.8.19",
+    "@types/react-dom": "16.8.4",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "^3.4.1",
+    "redux": "^4.0.1",
+    "redux-devtools-extension": "^2.13.8",
+    "typescript": "3.9.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {}
+}

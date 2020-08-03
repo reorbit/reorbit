@@ -7,11 +7,11 @@ React popularized component based views, but it coupled application state with t
 
 To give a better sense of this in action, here is a demo of a fractal counter using Reorbit:
 
-[Fractal Counter](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/reorbit-react/examples/fractal)
+[Fractal Counter](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/react-reorbit/examples/fractal)
 
 And a slightly more complicated application where each counter also tracks the sum of all it's child counters in a performant manner:
 
-[Sum](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/reorbit-react/examples/sum)
+[Sum](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/react-reorbit/examples/sum)
 
 ## How does it work?
 
