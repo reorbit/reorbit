@@ -5,5 +5,10 @@
     "packages/*",
     "examples/**"
   ],
+  "command": {
+    "version": {
+      "private": false
+    }
+  },
   "version": "0.0.11"
 }
