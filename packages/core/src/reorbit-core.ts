@@ -400,12 +400,12 @@ export function cacheSet(orb: Orb, key: Symbol, value: any) {
 
 export function cacheGet(orb: Orb, key: Symbol) {
   const path = JSON.stringify(orb.meta.path);
-  const { nonSerializableCache } =  orb.root!.meta;
+  const { nonSerializableCache } = orb.root!.meta;
   return nonSerializableCache?.get(path)?.get(key);
 }
 
 export function cacheClear(orb: Orb) {
   const path = JSON.stringify(orb.meta.path);
-  const { nonSerializableCache } =  orb.root!.meta;
+  const { nonSerializableCache } = orb.root!.meta;
   nonSerializableCache?.delete(path);
 }
