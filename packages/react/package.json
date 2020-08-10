@@ -1,6 +1,6 @@
 {
   "name": "@reorbit/react",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Reorbit integration with React",
   "keywords": [
     "react",
@@ -34,7 +34,7 @@
     "react": "^16.13.1"
   },
   "devDependencies": {
-    "@reorbit/core": "^0.0.12",
+    "@reorbit/core": "^0.0.13",
     "@types/jest": "^26.0.9",
     "@types/react": "^16.9.44",
     "jest": "^26.2.2",

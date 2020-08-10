@@ -1,6 +1,6 @@
 {
   "name": "@reorbit/redux",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Redux integration with Reorbit",
   "keywords": [
     "redux",
@@ -34,7 +34,7 @@
     "redux": "^4.0.1"
   },
   "devDependencies": {
-    "@reorbit/core": "^0.0.12",
+    "@reorbit/core": "^0.0.13",
     "@types/jest": "^26.0.9",
     "jest": "^26.2.2",
     "prettier": "^2.0.5",
