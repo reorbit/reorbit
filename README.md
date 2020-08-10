@@ -7,11 +7,11 @@ React popularized component based views, but it coupled application state with t
 
 To give a better sense of this in action, here is a demo of a fractal counter using Reorbit:
 
-[Fractal Counter](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/react-reorbit/examples/fractal)
+[Fractal Counter](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/examples/react/react-fractal)
 
-And a slightly more complicated application where each counter also tracks the sum of all it's child counters in a performant manner:
+And here is the implementation of quintessential todo app:
 
-[Sum](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/react-reorbit/examples/sum)
+[Sum](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/examples/react/react-todos)
 
 ## How does it work?
 
@@ -63,11 +63,11 @@ subscribe(counterOrb, () => {
 ```
 ### Step 4 - Trigger a state change
 ```javascript
-counterOrb.state.value.increment(1);
+counterOrb.increment(1);
 // Value: 1
 ```
 
-[Try it out!](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/packages/reorbit/examples/basic)
+[Try it out!](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/examples/core/basic)
 
 ## Static properties
 ```javascript
@@ -121,8 +121,8 @@ export const DynamicOrbDef: OrbDef = {
       dependencies: [
         (orb: DynamicOrb) => orb.state.value,
       ],
-      derive(orb: DynamicOrb) {
-        return orb.value * 2;
+      derive(currentOrb: DynamicOrb, dependantOrb: DynamicOrb) {
+        return dependantOrb.value * 2;
       },
     },
   },
@@ -132,10 +132,10 @@ const dynamicOrb = createOrb<DynamicOrb>(DynamicOrbDef);
 
 console.log(dynamicOrb.double);
 // 0
-dynamicOrb.state.value.increment(1);
+dynamicOrb.increment(1);
 console.log(dynamicOrb.double);
 // 2
-dynamicOrb.state.value.increment(1);
+dynamicOrb.increment(1);
 console.log(dynamicOrb.double);
 // 4
 ```
@@ -167,7 +167,7 @@ export const NewOrbDef: OrbDef = {
     // Properties can be values or functions
     staticProperty: 0,
     staticFunction() {
-      console.log('side effect'); // Functions are a good place to store side effects
+      console.log('side effect'); // Functions are where all side effects should be placed
     },
   },
 };
@@ -191,9 +191,10 @@ export const NewOrbDef: OrbDef = {
       ],
       // The derive function takes in the orbs containing the subscrbed dependencies
       // The first argument will always be the current orb
+      // The orbs that hold all the remaining dependencies are spread out as the remaining arguments
       // The value returned from the function is assigned to the orb
-      derive(orb: NewOrbDef, [orb: NewOrbDef]) {
-        return orb.value * 2;
+      derive(currentOrb: NewOrbDef, dependentOrb: NewOrbDef) {
+        return dependentOrb.value * 2;
       },
     },
   },
