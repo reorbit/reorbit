@@ -18,7 +18,7 @@ export interface OrbDef<T extends Orb> {
   dynamic?: {
     [key: string]: {
       dependencies?: Array<(orb: T) => Subscribable>,
-      derive: (orb: T, ...args: Array<Orb>) => any,
+      derive: (orb: T, ...args: Array<any>) => any,
     },
   },
 }
@@ -60,7 +60,7 @@ export interface Meta {
   original: OrbDef<any>,
   path: string[],
   options?: Options,
-  extenables?: Extendables,
+  extendables?: Extendables,
   processingKey?: string,
   initialState?: any,
   immutableState?: any,
@@ -316,7 +316,7 @@ function useCachedOrb<T extends Orb>(parent?: Orb, key?: string): T | undefined 
 }
 
 function processExtensions(orb: Orb, options?: Options) {
-  if (orb.root!.meta.extenables) return;
+  if (orb.root!.meta.extendables) return;
   const augmenters: Augmenters = {
     static: bindStatic,
     state: bindState,
@@ -331,7 +331,7 @@ function processExtensions(orb: Orb, options?: Options) {
     const extended = plugin(acc).destroyOrb;
     return extended ? { destroyOrb: extended } : acc;
   }, destroyOrb);
-  orb.root!.meta.extenables = {
+  orb.root!.meta.extendables = {
     augmenters: processedAugmenters?.augmenters ? processedAugmenters?.augmenters : augmenters,
     destroyOrb: processedDestroyOrb?.destroyOrb ? processedDestroyOrb?.destroyOrb : destroyOrbBase,
   };
@@ -361,7 +361,7 @@ function destroyOrbBase(orb: Orb) {
 }
 
 export function destroyOrb(orb: Orb) {
-  const extendedDestroyOrb = orb.root?.meta.extenables?.destroyOrb!;
+  const extendedDestroyOrb = orb.root?.meta.extendables?.destroyOrb!;
   extendedDestroyOrb(orb);
 };
 
@@ -372,7 +372,7 @@ export function serialize(orb: Orb) {
 export function deserialize(orb: Orb, state: any) {
   const orbDef = orb.meta.original;
   orb.meta.initialState = state;
-  const augmenters = orb.root?.meta.extenables?.augmenters!;
+  const augmenters = orb.root?.meta.extendables?.augmenters!;
   keys(augmenters).forEach(augmenterKey => {
     augmenters[augmenterKey](orb, orbDef);
   });
