@@ -1,7 +1,7 @@
 # <img src="./logo/reorbit-logo.png " width="256">
 Reorbit is a library that enables application state to be structured, dynamic, and composable. It allows your to create a typesafe API to all your application state.
 
-![](name-of-giphy.gif)
+![](ReorbitDemo.gif)
 
 [Try it!](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/examples/redux-devtools/redux-devtools)
 
