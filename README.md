@@ -1,9 +1,14 @@
 # <img src="./logo/reorbit-logo.png " width="256">
-Reorbit is a library that enables application state to be structured, dynamic, and composable.
+Reorbit is a library that enables application state to be structured, dynamic, and composable. It allows your to create a typesafe API to all your application state.
+
+![](name-of-giphy.gif)
+
+[Try it!](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/examples/redux-devtools/redux-devtools)
 
 # Motivation
 
-React popularized component based views, but it coupled application state with the views. This causes issues because sometimes application state does not map 1-to-1 to views, like data returned from APIs. Libraries like Redux emerged to fill the gap of storing state decoupled from the views, but it has a few limitations. Since Redux is only concerned about serializable state, it does not provide a facility to compose related dynamic or other non-serializable properties. Reorbit allows you to group all state and logic that are "concerned" with each other into structured, self contained objects called "orbs". Orbs are decoupled from views and can be composed and abstracted. They therefore possess the same powerful properties similar to what composition and abstraction provides to React views.
+React popularized component based views, but it couples application state with the views. This causes issues when application state does not map 1-to-1 to views, like data returned from APIs. Libraries like Redux emerged to fill the gap of storing state decoupled from the views, but it has a few limitations. Since Redux is only concerned about serializable state, it does not provide a facility to compose related dynamic or other non-serializable properties.
+Reorbit allows you to group all state and logic that are "concerned" with each other into structured, self contained objects called "orbs". Orbs are decoupled from views and can be composed and abstracted. They therefore possess the same powerful properties similar to what composition and abstraction provides to React views.
 
 To give a better sense of this in action, here is a demo of a fractal counter using Reorbit:
 
@@ -15,9 +20,9 @@ And here is the implementation of quintessential todo app:
 
 ## How does it work?
 
-All state and related logic is defined as a tree of dynamic, composable, and type capable objects called "orbs". Views can subscribe to orbs and render when their state is updated.
+All state and related logic are defined as a tree of dynamic, composable, and type capable objects called "orbs". Views can subscribe to orbs and be rendered when their state is updated.
 
-Orbs are defined using plain objects, allowing the definitions themselves to be composed and transformed dynamically. Within an and orb definition, you can describe subscribable state and their respective transition functions. You can also define related static functions or properties, which are helpful for storing logic around side effects and other helper functions. Finally, you can also define dynamic properties in an orb that are dependent on its own state, or state from another orb within the application. This allows for applications where all state always has a single source of truth. You can even define child orbs as dynamic properties, allowing for composition and abstraction of orbs.
+Orbs are defined using plain objects, allowing the definitions to be composed and transformed dynamically. Within an orb definition, you can define subscribable state and their respective transition functions. You can also define related static functions or properties, which are helpful for storing logic around side effects and other helper functions. In addition, you can define dynamic properties in an orb that are dependent on its own state, or state from another orb within the application. This allows applications to have all state always have a single source of truth. You can even define child orbs as dynamic properties, allowing for composition and abstraction of orbs.
 
 Since all serializable state is structured in a predictable way, orbs can also be serialized and deserialized trivially. These are properties important to enabling powerful functionality within the application as well as enabling powerful developer tools.
 
@@ -27,18 +32,12 @@ Since all serializable state is structured in a predictable way, orbs can also b
 ```javascript
 import { Orb, OrbDef, State, createOrb, subscribe } from "reorbit";
 
-interface CounterOrbState extends State {
+interface CounterOrb extends Orb {
+  value: number;
   increment: (value: number) => number;
 }
 
-export interface CounterOrb extends Orb {
-  value: number;
-  state: {
-    value: CounterOrbState,
-  },
-}
-
-export const CounterOrbDef: OrbDef = {
+const CounterOrbDef: OrbDef<CounterOrb> = {
   state: {
     value: {
       default: 0,
@@ -71,41 +70,36 @@ counterOrb.increment(1);
 
 ## Static properties
 ```javascript
-export interface StaticOrb extends Orb {
+interface StaticOrb extends Orb {
   someConstant: number;
   sideEffect: (orb: StaticOrb) => void;
 }
 
-export const StaticOrbDef: OrbDef = {
+const StaticOrbDef: OrbDef<StaticOrb> = {
   static: {
     someConstant: 1,
-    sideEffect(orb: StaticOrb) {
-      setTimeout(() => console.log(`Value: ${orb.someConstant}`), 1000);
+    sideEffect(num: number) {
+      setTimeout(() => console.log(`Value: ${num}`), 1000);
     },
   },
 };
 
 const staticOrb = createOrb<StaticOrb>(StaticOrbDef);
 
-staticOrb.sideEffect(staticOrb);
+staticOrb.sideEffect(1);
 // Value: 1 (after 1 second)
 ```
 
 ## Dynamic properties
 ```javascript
-interface ValueState extends State {
+
+interface DynamicOrb extends Orb {
+  value: number,
+  double: number,
   increment: (value: number) => void;
 }
 
-export interface DynamicOrb extends Orb {
-  value: number,
-  double: number,
-  state: {
-    value: ValueState,
-  },
-}
-
-export const DynamicOrbDef: OrbDef = {
+const DynamicOrbDef: OrbDef<DynamicOrb> = {
   state: {
     value: {
       default: 0,

@@ -84,8 +84,12 @@ const AddTodoOrbDef = {
     }
   },
   static: {
-    addTodo(orb, todoText) {
-      orb.parent.todoListOrb.addTodo(todoText);
+    addTodo(orb) {
+      if (!orb.todoText.trim()) {
+        return;
+      }
+      orb.parent.todoListOrb.addTodo(orb.todoText);
+      orb.update('');
     }
   }
 }
@@ -108,6 +112,8 @@ const appOrb = createOrb(AppOrbDef, undefined, undefined, {
   extensions: [reduxDevtools],
 });
 
+window.orb = appOrb;
+
 const AddTodo = () => {
   const { addTodoOrb } = appOrb;
   const { todoText, update, addTodo } = addTodoOrb;
@@ -120,11 +126,7 @@ const AddTodo = () => {
       <form
         onSubmit={e => {
           e.preventDefault()
-          if (!todoText.trim()) {
-            return
-          }
-          addTodo(addTodoOrb, todoText)
-          update('')
+          addTodo()
         }}
       >
         <input value={todoText} onChange={onChange} />
@@ -192,7 +194,7 @@ const Footer = () => (
 function App() {
   useOrb(appOrb);
   return (
-    <div>
+    <div style={{ margin: '1rem' }}>
       <AddTodo />
       <VisibleTodoList />
       <Footer />
