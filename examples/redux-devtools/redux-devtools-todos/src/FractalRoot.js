@@ -37,7 +37,7 @@ const Fractal = ({ orb }) => {
   const { value, increment, decrement, children } = orb;
   useOrb(orb);
   return (
-    <div style={{ display: "flex", flexDirection: "row" }}>
+    <div style={{ display: "flex", flexDirection: "row", margin: '1rem' }}>
       Value ({value})
       <div>
         <button onClick={() => increment(1)}>+</button>
