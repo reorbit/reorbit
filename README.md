@@ -3,7 +3,7 @@ Reorbit is a library that enables application state to be structured, dynamic, a
 
 ![](ReorbitDemo.gif)
 
-[Try it!](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/examples/redux-devtools/redux-devtools)
+[Try it!](https://codesandbox.io/s/github/reorbit/reorbit/tree/master/examples/redux-devtools/redux-devtools-todos)
 
 # Motivation
 
